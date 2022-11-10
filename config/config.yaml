@@ -1,0 +1,4 @@
+# Input data and output locations
+output_dir: 'results'
+#raw_data_dir: '/scratch/prj/alspac_genes/genetics/gi_1000g_g0p'
+raw_data_dir: 'data/slurmtest'
