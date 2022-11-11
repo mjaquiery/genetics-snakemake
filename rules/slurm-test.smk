@@ -9,8 +9,6 @@ rule make_data:
         """
 
 rule copy_data:
-    group:
-        "chr_processing"
     input:
         os.path.join(config['raw_data_dir'], "hiworld.txt")
     output:
