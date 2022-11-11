@@ -1,2 +1,10 @@
-cluster: sbatch -p=cpu -J={rulename}
+resources:
+  partition: cpu
+cluster:
+  mkdir -p logs/{rule} &&
+  sbatch
+    --partition={resources.partition}
+    --job-name=smk-{rule}-{wildcards}
+    --output=logs/{rule}/{rule}-{wildcards}-%j.out
+    --account=k2260401
 jobs: 22

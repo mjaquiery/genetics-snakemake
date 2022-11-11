@@ -18,6 +18,7 @@ module load conda # or anaconda, or whatever the cluster offers
 conda env create -p envs/smake --file=envs/environment.yaml # create conda environment from the project's YAML file
 
 conda activate envs/smake # activate environment. Use conda deactivate to quit
+# If you need to remove it to reset, use conda env remove -p envs/smake
 ```
 
 ### Run the slurmtest script
