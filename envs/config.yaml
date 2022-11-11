@@ -1,0 +1,2 @@
+cluster: sbatch -p=cpu -J={rulename}
+jobs: 22

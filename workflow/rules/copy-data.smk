@@ -4,11 +4,12 @@ rule copy_data:
     group:
         "chr_processing"
     input:
-        os.path.join(config['raw_data_dir'], "hiworld.txt")
+        os.path.join(config['raw_data_dir'])
     output:
-        os.path.join("{OUTPUT_DIR}", "slurmtest", "hiworld_{CHR}.txt")
+        os.path.join("{OUTPUT_DIR}", "bgen", "chr_{CHR}.bgen")
     shell:
         """
+        
         cp {input} {output}
         """
 
