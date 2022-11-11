@@ -18,22 +18,32 @@ configfile: "config/config.yaml"
 ##### load rules #####
 include: "rules/slurm-test.smk"
 
+include: "rules/extract-subset.smk"
 include: "rules/copy-data.smk"
+include: "rules/clean_gwas.smk"
+include: "rules/subset-bgen.smk"
+include: "rules/qc_bed.smk"
+include: "rules/examine-missingness.smk"
+include: "rules/merge_bed.smk"
+include: "rules/calculate_prs.smk"
 
 ##### target rules #####
 
 # Require the completed PRS and relatedness scores
 rule all:
     input:
-        os.path.join(f"{config['output_dir']}", "prs", "prs.out"),
-        os.path.join(f"{config['output_dir']}", "relatedness", "related.out")
+        os.path.join(config['output_dir'], "partner", "prs.all_score"),
+        os.path.join(config['output_dir'], "mother", "prs.all_score"),
+        os.path.join(config['output_dir'], "child", "prs.all_score")
+        # os.path.join(f"{config['output_dir']}", "relatedness", "related.out")
 
 # Remove intermediate directories
 rule clean:
     shell:
         """
-        rm -rf {config[output_dir]}/vcf &&
-        rm -rf {config[output_dir]}/plink
+        rm -rf {config[output_dir]}/*/vcf &&
+        rm -rf {config[output_dir]}/*/bed &&
+        rm -rf {config[output_dir]}/*/bed_qc
         """
 
 # Require the completed PRS and relatedness scores

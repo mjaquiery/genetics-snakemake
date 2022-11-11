@@ -1,4 +1,22 @@
 # Input data and output locations
 output_dir: 'results'
-#raw_data_dir: '/scratch/prj/alspac_genes/genetics/gi_1000g_g0p'
-raw_data_dir: 'data/slurmtest'
+#base_data_path: '/scratch/prj/alspac_genes/genetics'
+base_data_path: 'data'
+# absolute
+gwas_file: 'data/gwas.gwas'
+
+dirname_partner: 'gi_1000g_g0p'
+dirname_child: 'gi_1000g_g0m'
+dirname_mother: 'gi_1000g_g0c'
+
+# path from base_data_path/dirname_*/
+bgen_path_partner: ''
+bgen_path_child: ''
+bgen_path_mother: ''
+
+# path from base_data_path/dirname_*/
+path_to_partner_ids: 'swapped.sample'
+path_to_child_ids: 'swapped.sample'
+path_to_mother_ids: 'swapped.sample'
+# path from base_data_path
+path_to_link_ids: 'linker_file.csv'

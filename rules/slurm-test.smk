@@ -2,15 +2,15 @@
 
 rule make_data:
     output:
-        os.path.join(config['raw_data_dir'], "hiworld.txt")
+        os.path.join(config['base_data_path'], "hiworld.txt")
     shell:
         """
         echo "hello, world" > {output}
         """
 
-rule copy_data:
+rule hiworld:
     input:
-        os.path.join(config['raw_data_dir'], "hiworld.txt")
+        os.path.join(config['base_data_path'], "hiworld.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "slurmtest", "hiworld_{CHR}.txt")
     shell:
