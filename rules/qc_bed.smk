@@ -4,9 +4,9 @@ rule qc_bed:
     group:
         "chr_processing"
     input:
-        os.path.join("{OUTPUT_DIR}", "{ROLE}", "bed", "chr_{CHR}.bed")
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bed")
     output:
-        os.path.join("{OUTPUT_DIR}", "{ROLE}", "bed_qc", "chr_{CHR}.bed")
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed_qc", "chr_{CHR}.bed")
     shell:
         """
         plink \

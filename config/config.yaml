@@ -1,22 +1,14 @@
 # Input data and output locations
 output_dir: 'results'
-#base_data_path: '/scratch/prj/alspac_genes/genetics'
-base_data_path: 'data'
-# absolute
-gwas_file: 'data/gwas.gwas'
 
-dirname_partner: 'gi_1000g_g0p'
-dirname_child: 'gi_1000g_g0m'
-dirname_mother: 'gi_1000g_g0c'
+linker_file: 'data/linker_file.csv'  # maps ids in bgen files to contributor ids (cids)
+include_cids_file: 'data/include_ids.txt'
+gwas_file: 'data/gwas.tsv'
 
-# path from base_data_path/dirname_*/
-bgen_path_partner: ''
-bgen_path_child: ''
-bgen_path_mother: ''
-
-# path from base_data_path/dirname_*/
-path_to_partner_ids: 'swapped.sample'
-path_to_child_ids: 'swapped.sample'
-path_to_mother_ids: 'swapped.sample'
-# path from base_data_path
-path_to_link_ids: 'linker_file.csv'
+data_dirs:
+  g0p:
+    bgen_dir: 'data/gi_1000g_g0p/dosage_bgen'
+    sample_file: 'data/gi_1000g_g0p/swapped.sample'
+  g0m:
+    bgen_dir: 'data/gi_1000g_g0m_g1/dosage_bgen'
+    sample_file: 'data/gi_1000g_g0m_g1/swapped.sample'

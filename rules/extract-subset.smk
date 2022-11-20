@@ -1,10 +1,8 @@
 # Determine IDs that form part of a triad with partners who have genetic data
 rule extract_subset:
     input:
-        link=os.path.join(config['base_data_path'], config['path_to_link_ids']),
-        partner=os.path.join(config['base_data_path'], config['dirname_partner'], config['path_to_partner_ids'])
+        link=os.path.join(config['linker_file']),
+        inc=os.path.join(config['include_cids_file'])
     output:
-        partner=os.path.join("{OUTPUT_DIR}", "ids", "path_to_subset_partner_ids.txt"),
-        child=os.path.join("{OUTPUT_DIR}", "ids", "path_to_subset_child_ids.txt"),
-        mother=os.path.join("{OUTPUT_DIR}", "ids", "path_to_subset_mother_ids.txt")
+        os.path.join("{OUTPUT_DIR}", "include_cids_{SOURCE}.txt")
     script: "scripts/extract_data_subset.r"

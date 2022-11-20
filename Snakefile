@@ -27,14 +27,18 @@ include: "rules/examine-missingness.smk"
 include: "rules/merge_bed.smk"
 include: "rules/calculate_prs.smk"
 
+# Constrain wildcards to NOT use /
+wildcard_constraints:
+    OUTPUT_DIR="[^/]+",
+    SOURCE="[^/]+"
+
 ##### target rules #####
 
 # Require the completed PRS and relatedness scores
 rule all:
     input:
-        os.path.join(config['output_dir'], "partner", "prs.all_score"),
-        os.path.join(config['output_dir'], "mother", "prs.all_score"),
-        os.path.join(config['output_dir'], "child", "prs.all_score")
+        os.path.join(config['output_dir'], "g0m", "prs.all_score"),
+        os.path.join(config['output_dir'], "g0p", "prs.all_score")
         # os.path.join(f"{config['output_dir']}", "relatedness", "related.out")
 
 # Remove intermediate directories

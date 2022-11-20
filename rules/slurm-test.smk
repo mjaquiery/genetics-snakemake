@@ -2,7 +2,7 @@
 
 rule make_data:
     output:
-        os.path.join(config['base_data_path'], "hiworld.txt")
+        os.path.join("hiworld.txt")
     shell:
         """
         echo "hello, world" > {output}
@@ -10,7 +10,7 @@ rule make_data:
 
 rule hiworld:
     input:
-        os.path.join(config['base_data_path'], "hiworld.txt")
+        os.path.join("hiworld.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "slurmtest", "hiworld_{CHR}.txt")
     shell:
