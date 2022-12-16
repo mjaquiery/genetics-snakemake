@@ -11,7 +11,7 @@ rule subset_bgen:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bed")
     shell:
         """
-        module load qctool/2022-04-07-gcc-9.4.0
+        # module load qctool/2022-04-07-gcc-9.4.0  # we use a local install because the cluster version is broken
         qctool -g {input.bgen} -s {input.sample} -og {output} -incl-samples {input.ids}
         # remove original bgen to conserve disk space
         rm -f {input.bgen}
