@@ -2,7 +2,6 @@
 output_dir: 'results'
 
 linker_file: 'data/linker_file.csv'  # maps ids in bgen files to contributor ids (cids)
-include_cids_file: 'data/include_ids.txt'
 gwas_file: 'data/gwas.tsv'
 
 data_dirs:

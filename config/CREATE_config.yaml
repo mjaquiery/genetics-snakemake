@@ -2,7 +2,6 @@
 output_dir: '/users/k2260401/alspac/am/results'
 
 linker_file: '/users/k2260401/alspac/am/data/linker_file.csv'  # maps ids in bgen files to contributor ids (cids)
-include_cids_file: '/users/k2260401/alspac/am/data/include_ids.txt'
 gwas_file: '/users/k2260401/alspac/am/data/gwas.tsv'
 
 data_dirs:
