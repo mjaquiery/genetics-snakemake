@@ -6,9 +6,9 @@ include_cids_file: 'data/include_ids.txt'
 gwas_file: 'data/gwas.tsv'
 
 data_dirs:
-  g0p:
+  gi_1000g_g0p:
     bgen_dir: 'data/gi_1000g_g0p/dosage_bgen'
     sample_file: 'data/gi_1000g_g0p/swapped.sample'
-  g0m:
+  gi_1000g_g0m_g1:
     bgen_dir: 'data/gi_1000g_g0m_g1/dosage_bgen'
     sample_file: 'data/gi_1000g_g0m_g1/swapped.sample'

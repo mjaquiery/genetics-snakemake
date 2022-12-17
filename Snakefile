@@ -37,8 +37,8 @@ wildcard_constraints:
 # Require the completed PRS and relatedness scores
 rule all:
     input:
-        os.path.join(config['output_dir'], "g0m", "prs.all_score"),
-        os.path.join(config['output_dir'], "g0p", "prs.all_score")
+        os.path.join(config['output_dir'], "gi_1000g_g0p", "prs.all_score"),
+        os.path.join(config['output_dir'], "gi_1000g_g0m_g1", "prs.all_score")
         # os.path.join(f"{config['output_dir']}", "relatedness", "related.out")
 
 # Remove intermediate directories

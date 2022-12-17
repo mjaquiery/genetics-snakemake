@@ -1,5 +1,3 @@
-resources:
-  partition: cpu
 cluster:
   mkdir -p logs/{rule} &&
   sbatch
