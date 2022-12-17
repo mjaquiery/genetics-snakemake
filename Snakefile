@@ -29,7 +29,7 @@ include: "rules/calculate_prs.smk"
 
 # Constrain wildcards to NOT use /
 wildcard_constraints:
-    OUTPUT_DIR="[^/]+",
+    # OUTPUT_DIR="[^/]+",
     SOURCE="[^/]+"
 
 ##### target rules #####

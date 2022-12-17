@@ -1,7 +1,7 @@
 cluster:
   mkdir -p logs/{rule} &&
   sbatch
-    --partition={resources.partition}
+    --partition=cpu
     --job-name=smk-{rule}-{wildcards}
     --output=logs/{rule}/{rule}-{wildcards}-%j.out
     --account=k2260401
