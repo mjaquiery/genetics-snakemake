@@ -27,6 +27,8 @@ rule bye_world:
         os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "byeworld_{CHR}.txt")
+    conda:
+        "envs/environment.yaml"
     shell:
         """
         echo "copying file"
