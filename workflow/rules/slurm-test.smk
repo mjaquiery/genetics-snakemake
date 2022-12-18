@@ -22,7 +22,7 @@ rule hi_world:
         sleep 30
         """
 
-rule bye_world:
+rule rversion:
     input:
         os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
     output:
@@ -32,7 +32,7 @@ rule bye_world:
     shell:
         "Rscript --version >> {output}"
 
-rule bye_world:
+rule rtest:
     input:
         os.path.join("{OUTPUT_DIR}", "rver_{CHR}.txt")
     output:
