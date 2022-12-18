@@ -23,8 +23,6 @@ rule hi_world:
         """
 
 rule bye_world:
-    envmodules:
-        "r/4.1.1-gcc-9.4.0"
     input:
         os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
     output:

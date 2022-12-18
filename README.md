@@ -17,7 +17,7 @@ module load conda # or anaconda, or whatever the cluster offers
 # On KCL CREATE we have to go via mamba 
 conda create --name test-mamba -c conda-forge mamba
 conda activate test-mamba
-mamba create -c conda-forge -c bioconda -n snakemake snakemake
+mamba create -c conda-forge -c bioconda -c r-tidyverse -n snakemake snakemake
 # Run 'mamba init' to be able to run mamba activate/deactivate
 # and start a new shell session. Or use conda to activate/deactivate.
 # (test-mamba) $ mamba init
@@ -25,16 +25,6 @@ mamba create -c conda-forge -c bioconda -n snakemake snakemake
 mamba activate snakemake
 ```
 
-### Install r packages
-
-We use the tidyverse, so we need to install the packages we use.
-Don't just try installing the whole tidyverse, because we'll run into missing library issues,
-and we don't want to have to figure out which modules need loading to make the libraries available
-that `haven` and other required packages require.
-
-```shell
-Rscript -e 'install.packages(c("tibble", "dplyr", "stringr", "readr", "purrr", "tidyr"), lib="~/.tools/lib/r", repos="https://cloud.r-project.org/")'
-```
 
 ### Install qctool
 

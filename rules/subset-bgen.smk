@@ -5,8 +5,6 @@ rule extract_id_list:
         os.path.join("{OUTPUT_DIR}", "complete_triad_ids.tsv")
     output:
         os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
-    envmodules:
-        "r/4.1.1-gcc-9.4.0"
     script:
         "scripts/extract_id_column.r"
 
