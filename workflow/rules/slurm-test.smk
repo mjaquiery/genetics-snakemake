@@ -29,6 +29,8 @@ rule rversion:
         os.path.join("{OUTPUT_DIR}", "rver_{CHR}.txt")
     conda:
         "../envs/environment.yaml"
+    envmodules:
+        "r/4.1.1-gcc-9.4.0"
     shell:
         "Rscript --version >> {output}"
 
@@ -39,6 +41,8 @@ rule rtest:
         os.path.join("{OUTPUT_DIR}", "r_{CHR}.txt")
     conda:
         "../envs/environment.yaml"
+    envmodules:
+        "r/4.1.1-gcc-9.4.0"
     script:
         "../scripts/test.R"
 
