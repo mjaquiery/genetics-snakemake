@@ -5,5 +5,7 @@ rule determine_complete_triads:
         link=os.path.join(config['linker_file'])
     output:
         os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
+    envmodules:
+        "r/4.1.1-gcc-9.4.0"
     script:
         "scripts/determine_complete_triads.r"

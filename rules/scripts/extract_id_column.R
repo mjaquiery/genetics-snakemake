@@ -5,7 +5,11 @@
 # with cidCol at the end
 #
 # output will be a similarly structured file with only complete triads retained
-library(tidyverse)  # for read_tsv
+library(readr)  # for read_tsv
+
+print("extract_column_id:")
+print(paste("snakemake$input:", snakemake$input))
+print(paste("snakemake$wildcards$SOURCE:", snakemake$wildcards$SOURCE))
 
 triads <- snakemake$input
 column <- snakemake$wildcards$SOURCE

@@ -4,7 +4,7 @@ rule copy_data:
     group:
         "chr_processing"
     input:
-        lambda wc: os.path.join(config['data_dirs'][wc.SOURCE]['bgen_dir'])
+        lambda wc: glob_wildcards(os.path.join(config['data_dirs'][wc.SOURCE]['bgen_dir']), f"*chr_?0?{wc.CHR}.bgen")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen")
     shell:

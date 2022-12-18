@@ -5,7 +5,16 @@
 # with cidCol at the end
 #
 # output will be a similarly structured file with only complete triads retained
-library(tidyverse)
+library(readr)
+library(tibble)
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(stringr)
+
+print("determine_complete_triads:")
+print(paste("snakemake$input$ids:", snakemake$input$ids))
+print(paste("snakemake$input$link:", snakemake$input$link))
 
 ids <- snakemake$input$ids
 link <- snakemake$input$link

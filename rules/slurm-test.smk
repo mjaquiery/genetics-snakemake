@@ -5,21 +5,44 @@ rule make_data:
         os.path.join("hiworld.txt")
     shell:
         """
+        echo "writing to file"
         echo "hello, world" > {output}
         """
 
-rule hiworld:
+rule hi_world:
     input:
         os.path.join("hiworld.txt")
     output:
-        os.path.join("{OUTPUT_DIR}", "slurmtest", "hiworld_{CHR}.txt")
+        os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
     shell:
         """
+        echo "copying file"
         cp {input} {output}
+        echo "taking a nap"
         sleep 30
+        """
+
+rule bye_world:
+    envmodules:
+        "r/4.1.1-gcc-9.4.0"
+    input:
+        os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
+    output:
+        os.path.join("{OUTPUT_DIR}", "byeworld_{CHR}.txt")
+    shell:
+        """
+        echo "copying file"
+        cp {input} {output}
+        echo "taking a nap"
+        sleep 30
+        echo "Running Rscript"
+        Rscript -e "print(letters)" >> {output}
+        echo "Complete"
         """
 
 """
 Test with:
-snakemake --cores 1 results/slurmtest/hiworld_22.txt
+snakemake --cores 1 results/slurmtest/byeworld_22.txt
+Or:
+snakemake --cores 1 test
 """

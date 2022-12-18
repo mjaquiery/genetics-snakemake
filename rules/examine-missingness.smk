@@ -23,4 +23,6 @@ rule generate_missingness_report:
         )
     output:
         os.path.join("{OUTPUT_DIR}", "reports", "{SOURCE}_missingness.csv")
+    envmodules:
+        "r/4.1.1-gcc-9.4.0"
     script: "scripts/generate_missingness_report.r"

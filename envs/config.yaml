@@ -4,6 +4,5 @@ cluster:
     --partition=cpu
     --job-name=smk-{rule}-{wildcards}
     --output=logs/{rule}/{rule}-{wildcards}-%j.out
-    --account=k2260401
     --export=R_LIBS='~/.tools/lib/r'
 jobs: 22

@@ -53,7 +53,7 @@ rule clean:
 # Require the completed PRS and relatedness scores
 rule test:
     input:
-        expand(os.path.join(config['output_dir'], "slurmtest", "hiworld_{i}.txt"), i=range(1, 23))
+        expand(os.path.join("slurmtest", "byeworld_{i}.txt"), i=range(1, 5))
 
 """
 Test with
