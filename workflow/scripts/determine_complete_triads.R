@@ -13,11 +13,11 @@ library(tidyr)
 library(stringr)
 
 print("determine_complete_triads:")
-print(paste("snakemake$input$ids:", snakemake$input$ids))
-print(paste("snakemake$input$link:", snakemake$input$link))
+print(paste("snakemake@input$ids:", snakemake@input$ids))
+print(paste("snakemake@input$link:", snakemake@input$link))
 
-ids <- snakemake$input$ids
-link <- snakemake$input$link
+ids <- snakemake@input$ids
+link <- snakemake@input$link
 
 # read in data
 linkfile <- read.csv(link) %>% as_tibble()
@@ -73,4 +73,4 @@ id_map <- complete_triads %>%
   ) %>%
   select(-cid, cid)
 
-write_tsv(id_map, snakemake$output)
+write_tsv(id_map, snakemake@output)
