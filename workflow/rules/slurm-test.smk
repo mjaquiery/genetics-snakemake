@@ -26,7 +26,17 @@ rule bye_world:
     input:
         os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
     output:
-        os.path.join("{OUTPUT_DIR}", "byeworld_{CHR}.txt")
+        os.path.join("{OUTPUT_DIR}", "rver_{CHR}.txt")
+    conda:
+        "../envs/environment.yaml"
+    shell:
+        "Rscript --version >> {output}"
+
+rule bye_world:
+    input:
+        os.path.join("{OUTPUT_DIR}", "rver_{CHR}.txt")
+    output:
+        os.path.join("{OUTPUT_DIR}", "r_{CHR}.txt")
     conda:
         "../envs/environment.yaml"
     script:
