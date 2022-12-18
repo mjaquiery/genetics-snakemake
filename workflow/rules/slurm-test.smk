@@ -29,16 +29,8 @@ rule bye_world:
         os.path.join("{OUTPUT_DIR}", "byeworld_{CHR}.txt")
     conda:
         "../envs/environment.yaml"
-    shell:
-        """
-        echo "copying file"
-        cp {input} {output}
-        echo "taking a nap"
-        sleep 30
-        echo "Running Rscript"
-        Rscript -e "print(letters)" >> {output}
-        echo "Complete"
-        """
+    script:
+        "scripts/test.R"
 
 """
 Test with:
