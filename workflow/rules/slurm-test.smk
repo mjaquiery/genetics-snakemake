@@ -22,9 +22,23 @@ rule hi_world:
         sleep 30
         """
 
-rule rversion:
+rule shelldump:
     input:
         os.path.join("{OUTPUT_DIR}", "hiworld_{CHR}.txt")
+    output:
+        os.path.join("{OUTPUT_DIR}", "sh_{CHR}.txt")
+    shell:
+        """
+        echo $0 >> {output}
+        echo $PATH >> {output}
+        echo pwd >> {output}
+        which conda >> {output}
+        which module >> {output}
+        """
+
+rule rversion:
+    input:
+        os.path.join("{OUTPUT_DIR}", "sh_{CHR}.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "rver_{CHR}.txt")
     conda:
