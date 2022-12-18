@@ -30,7 +30,7 @@ rule bye_world:
     conda:
         "../envs/environment.yaml"
     script:
-        "scripts/test.R"
+        "../scripts/test.R"
 
 """
 Test with:
