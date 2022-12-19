@@ -8,7 +8,7 @@ rule merge_bed:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
     shell:
         """
-        in_filename={input}
+        in_filename={input.file}
         in_filename=${{in_filename%.*}}
         out_filename={output}
         out_filename=${{out_filename%.*}}
