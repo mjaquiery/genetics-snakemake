@@ -22,5 +22,6 @@ rule qc_bed:
             --hwe 0.000001 \
             --mind 0.1 \
             --const-fid 0 \
-            --out ${{out_filename}}
+            --out ${{out_filename}} \
+            --allow-extra-chr  # required to avoid Error: Invalid chromosome code 'NA' on line 1 of .bim file.
         """
