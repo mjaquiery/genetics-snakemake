@@ -8,6 +8,7 @@ rule merge_bed:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
     shell:
         """
+        echo "Merging .bed files"
         plink --bfile {input.file} --merge-list {input.list} --make-bed --out {output}
         """
 
@@ -22,6 +23,7 @@ rule make_mergelist:
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     run:
+        print(f"Making mergelist -> {output}")
         import os
         with open(output, "w+") as list_file:
             for f in input:

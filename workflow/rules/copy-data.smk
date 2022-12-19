@@ -9,5 +9,6 @@ rule copy_data:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen")
     shell:
         """
+        echo "copy {input}/*chr{wildcards.CHR}.bgen -> {output}"
         cp {input}/*chr{wildcards.CHR}.bgen {output}
         """

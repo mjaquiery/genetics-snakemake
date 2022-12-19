@@ -10,6 +10,7 @@ rule calculate_prs:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
+        echo "Calculate PRS with PRSice_linux:"
         PRSice_linux \
             --base {input} \
             --snp SNP \
