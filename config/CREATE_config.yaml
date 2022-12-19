@@ -1,5 +1,5 @@
 # Input data and output locations
-output_dir: '/users/k2260401/alspac/am/results'
+output_dir: 'results'
 
 linker_file: '/users/k2260401/alspac/am/data/linker_file.csv'  # maps ids in bgen files to contributor ids (cids)
 gwas_file: '/users/k2260401/alspac/am/data/gwas.tsv'

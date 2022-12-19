@@ -63,7 +63,7 @@ rule rtest:
 
 """
 Test with:
-snakemake --cores 1 results/slurmtest/byeworld_22.txt
+snakemake --cores 1 slurmtest/byeworld_22.txt
 Or:
 snakemake --cores 1 test
 """
