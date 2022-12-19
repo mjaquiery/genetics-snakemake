@@ -18,6 +18,5 @@ rule qc_bed:
             --hwe 0.000001 \
             --mind 0.1 \
             --const-fid 0 \
-            --rm-dup exclude-all \
             --out {output}
         """
