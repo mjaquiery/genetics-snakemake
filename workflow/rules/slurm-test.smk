@@ -1,4 +1,4 @@
-# Take raw data and move it to a temporary location to avoid corrupting it
+# Run a simple workflow test that will ensure we have snakemake and R available
 
 rule make_data:
     output:
@@ -29,11 +29,12 @@ rule shelldump:
         os.path.join("{OUTPUT_DIR}", "sh_{CHR}.txt")
     shell:
         """
-        echo $0 >> {output}
-        echo $PATH >> {output}
-        echo pwd >> {output}
-        which conda >> {output}
-        which module >> {output}
+        echo $0 >> output.txt
+        echo $PATH >> output.txt
+        echo pwd >> output.txt
+        which conda >> output.txt
+        which module >> output.txt
+        cp output.txt {output}
         """
 
 rule rversion:

@@ -1,3 +1,5 @@
-library(tidyverse)
+library(stringr)
+library(dplyr)
 print(snakemake)
-write(letters %>% str_replace_all('[aeiou]', '*'), snakemake@output)
+print(paste("Writing to",snakemake@output[[1]]))
+write(letters %>% str_replace_all('[aeiou]', '*'), snakemake@output[[1]])
