@@ -93,6 +93,6 @@ id_map <- id_map %>%
   select(-cid, cid)
 
 print("output:")
-head(output)
+head(id_map)
 
 write_tsv(id_map, snakemake@output[[1]])
