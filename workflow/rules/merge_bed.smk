@@ -30,4 +30,6 @@ rule make_mergelist:
         print(f"Making mergelist -> {output}")
         import os
         with open(str(output), "w+") as list_file:
-            list_file.writelines([os.path.splitext(f)[0] for f in input])
+            targets = [os.path.splitext(f)[0] for f in input]
+            print(targets)
+            list_file.write("\n".join(targets))
