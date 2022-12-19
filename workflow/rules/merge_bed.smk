@@ -29,6 +29,6 @@ rule make_mergelist:
     run:
         print(f"Making mergelist -> {output}")
         import os
-        with open(output, "w+") as list_file:
+        with open(str(output), "w+") as list_file:
             for f in input:
                 list_file.write(os.path.splitext(f)[0])
