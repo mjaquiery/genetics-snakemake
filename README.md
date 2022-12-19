@@ -78,6 +78,7 @@ then our environment, then run Snakemake.
 
 ```shell
 srun -p cpu --pty --mem=150G --ntasks=22 --time=24:00:00 /bin/bash
+# CHANGE DIR (cd) to the repository directory if we're not already there!
 # wait until the interactive node is available
 conda activate test-mamba
 mamba init
@@ -86,3 +87,12 @@ source ~/.bashrc
 mamba activate snakemake
 snakemake --cores 22 test
 ```
+
+We're also having to do the data copy stage manually because I'm out of time to debug the automated version:
+From in the repository directory:
+```shell
+cp -r ~/alspac/genetics/gi_1000g_g0m_g1/dosage_bgen results/gi_1000g_g0m_g1/bgen
+cp -r ~/alspac/genetics/gi_1000g_g0p/dosage_bgen results/gi_1000g_g0p/bgen
+```
+
+They also need to be renamed from `filtered_data_chr#.bgen` to `chr_#.bgen`.

@@ -6,7 +6,7 @@ rule extract_id_list:
     output:
         os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
     script:
-        "../scripts/extract_id_column.r"
+        "../scripts/extract_id_column.R"
 
 rule subset_bgen:
     group:

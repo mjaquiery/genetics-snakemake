@@ -23,4 +23,4 @@ rule generate_missingness_report:
         )
     output:
         os.path.join("{OUTPUT_DIR}", "reports", "{SOURCE}_missingness.csv")
-    script: "scripts/generate_missingness_report.r"
+    script: "scripts/generate_missingness_report.R"

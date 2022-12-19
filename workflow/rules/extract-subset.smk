@@ -6,4 +6,4 @@ rule determine_complete_triads:
     output:
         os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
     script:
-        "../scripts/determine_complete_triads.r"
+        "../scripts/determine_complete_triads.R"
