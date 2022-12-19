@@ -8,8 +8,10 @@ rule merge_bed:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
     shell:
         """
+        in_filename=basename "{input.file}" .bed
+        out_filename=basename "{output}" .bed
         echo "Merging .bed files"
-        plink --bfile {input.file} --merge-list {input.list} --make-bed --out {output}
+        plink --bfile ${{in_filename}} --merge-list {input.list} --make-bed --out ${{out_filename}}
         """
 
 rule make_mergelist:

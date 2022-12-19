@@ -9,14 +9,16 @@ rule qc_bed:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed_qc", "chr_{CHR}.bed")
     shell:
         """
+        in_filename=basename "{input}" .bed
+        out_filename=basename "{output}" .bed
         echo "Quality controlling {input} -> {output}"
         plink \
-            --bfile {input} \
+            --bfile ${{in_filename}} \
             --make-bed \
             --maf 0.01 \
             --geno 0.01 \
             --hwe 0.000001 \
             --mind 0.1 \
             --const-fid 0 \
-            --out {output}
+            --out ${{out_filename}}
         """
