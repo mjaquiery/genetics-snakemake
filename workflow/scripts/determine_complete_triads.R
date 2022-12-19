@@ -73,4 +73,4 @@ id_map <- complete_triads %>%
   ) %>%
   select(-cid, cid)
 
-write_tsv(id_map, snakemake@output)
+write_tsv(id_map, snakemake@output[[1]])

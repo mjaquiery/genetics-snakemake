@@ -8,10 +8,10 @@
 library(readr)  # for read_tsv
 
 print("extract_column_id:")
-print(paste("snakemake@input:", snakemake@input))
+print(paste("snakemake@input:", snakemake@input[[1]]))
 print(paste("snakemake@wildcards$SOURCE:", snakemake@wildcards$SOURCE))
 
-triads <- snakemake@input
+triads <- snakemake@input[[1]]
 column <- snakemake@wildcards$SOURCE
 
 # read in data
@@ -30,4 +30,4 @@ ids <- id_map[[column]]
 out <- sapply(ids, function(id) unlist(paste0(id, c("M", "F", "A", "B"))))
 out <- c(out[1,], out[2,], out[3,], out[4,])
 
-write(out, file = snakemake@output)
+write(out, file = snakemake@output[[1]])
