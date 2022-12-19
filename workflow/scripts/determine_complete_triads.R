@@ -26,7 +26,7 @@ all_ids <- tibble()
 for (id in ids) {
   d <- read_delim(id, delim = " ") %>%
     as_tibble() %>%
-    mutate(source = dirname(id))
+    mutate(source = basename(dirname(id)))
   all_ids <- bind_rows(all_ids, d)
 }
 
@@ -53,19 +53,32 @@ df <- df %>%
       else
         -1
     }
-  ))
+  )) %>%
+  filter(cid > 0)
+
+print("df:")
+head(df)
 
 cids <- df %>% nest(data = -cid)
+
+print("cids:")
+head(cids)
 
 # Identify complete triads
 complete_triads <- cids %>%
   mutate(entries = map_int(data, nrow)) %>%
   filter(entries > 2)
 
+print("complete_triads:")
+head(complete_triads)
+
 id_map <- complete_triads %>%
   unnest(data) %>%
   select(cid, id, source)
+
+print("id_map:")
 head(id_map)
+
 id_map <- id_map %>%
   pivot_wider(
     id_cols = cid,
@@ -74,5 +87,8 @@ id_map <- id_map %>%
     values_fn = unique
   ) %>%
   select(-cid, cid)
+
+print("output:")
+head(output)
 
 write_tsv(id_map, snakemake@output[[1]])
