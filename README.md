@@ -69,3 +69,20 @@ default config with that file:
 ```shell
 rm -f config/config.yaml && mv config/*.yaml config/config.yaml
 ```
+
+### Running directly (without submitting to scheduler)
+
+This is how we currently have to run the commands.
+Starting from the login, we request a node, then activate conda, then mamba, 
+then our environment, then run Snakemake.
+
+```shell
+srun -p cpu --pty --mem=150G --ntasks=22 --time=24:00:00 /bin/bash
+# wait until the interactive node is available
+conda activate test-mamba
+mamba init
+# activate our .bashrc file to mock shell restart
+source ~/.bashrc
+mamba activate snakemake
+snakemake --cores 22 test
+```

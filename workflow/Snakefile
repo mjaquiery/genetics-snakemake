@@ -15,7 +15,7 @@ import os.path
 
 # Used to enable access to module command
 # Should not be needed if executing within our own snakemake mamba environment
-shell.prefix("source /etc/profile; source $HOME/.bashrc; module load anaconda3/2021.05-gcc-10.3.0; conda init; source $HOME/.bashrc; conda activate test-mamba; mamba init; source $HOME/.bashrc; mamba activate snakemake;")
+#shell.prefix("source /etc/profile; source $HOME/.bashrc; module load anaconda3/2021.05-gcc-10.3.0; conda init bash; source $HOME/.bashrc; conda activate test-mamba; mamba init; source $HOME/.bashrc; mamba activate snakemake;")
 
 configfile: "config/config.yaml"
 
