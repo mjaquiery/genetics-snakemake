@@ -9,7 +9,8 @@ rule find_missing:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "miss", "chr_{CHR}.imiss")
     shell:
         """
-        filename=basename "{output}" .imiss
+        filename={input}
+        filename=${{filename%.*}}
         plink --bed {input} --out ${{filename}} --const-fid 0 --missing
         """
 

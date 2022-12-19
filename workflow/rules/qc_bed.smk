@@ -9,8 +9,10 @@ rule qc_bed:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed_qc", "chr_{CHR}.bed")
     shell:
         """
-        in_filename=basename "{input}" .bed
-        out_filename=basename "{output}" .bed
+        in_filename={input}
+        in_filename=${{in_filename%.*}}
+        out_filename={output}
+        out_filename=${{out_filename%.*}}
         echo "Quality controlling {input} -> {output}"
         plink \
             --bfile ${{in_filename}} \
