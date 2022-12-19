@@ -64,7 +64,9 @@ complete_triads <- cids %>%
 
 id_map <- complete_triads %>%
   unnest(data) %>%
-  select(cid, id, source) %>%
+  select(cid, id, source)
+head(id_map)
+id_map <- id_map %>%
   pivot_wider(
     id_cols = cid,
     names_from = source,
