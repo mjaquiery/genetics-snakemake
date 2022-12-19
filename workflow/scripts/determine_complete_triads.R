@@ -37,14 +37,17 @@ for (id in ids) {
 # B - second born child (for twins)
 #
 # Limit to valid rows, and split out role and id number
-df <- all_ids %>%
+df_in <- all_ids %>%
   mutate(role = str_extract(ID_1, "[FMAB]$")) %>%
   filter(!is.na(role)) %>%
   mutate(id = str_extract(ID_1, "\\d+")) %>%
   mutate(id = as.numeric(id))
 
+print("input:")
+head(df_in)
+
 # get pregnancy identifier from the linker file
-df <- df %>%
+df <- df_in %>%
   mutate(cid = map2_dbl(
     id, source,
     function(id, source) {
@@ -56,6 +59,7 @@ df <- df %>%
   )) %>%
   filter(cid > 0)
 
+print(paste("Dropped", nrow(df_in) - nrow(df), "rows with missing contributor ids"))
 print("df:")
 head(df)
 
