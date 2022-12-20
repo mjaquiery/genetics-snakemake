@@ -17,7 +17,6 @@ rule qc_bed:
         plink \
             --bfile ${{in_filename}} \
             --make-bed \
-            # biallelic only to avoid downstream errors about 3+ alleles
             --biallelic-only \
             --maf 0.01 \
             --geno 0.01 \
@@ -27,3 +26,6 @@ rule qc_bed:
             --out ${{out_filename}} \
             --allow-extra-chr  # required to avoid Error: Invalid chromosome code 'NA' on line 1 of .bim file.
         """
+
+# --biallelic-only to avoid downstream errors about 3+ alleles
+# --allow-extra-chr required to avoid Error: Invalid chromosome code 'NA' on line 1 of .bim file.
