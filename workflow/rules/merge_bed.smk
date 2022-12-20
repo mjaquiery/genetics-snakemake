@@ -13,7 +13,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink --bfile ${{in_filename}} --merge-list {input.list} --make-bed --out ${{out_filename}} --allow-extra-chr
+        plink --bfile ${{in_filename}} --merge-list {input.list} --make-bed --biallelic-only --out ${{out_filename}} --allow-extra-chr
         """
 
 rule make_mergelist:
