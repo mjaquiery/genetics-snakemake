@@ -17,6 +17,8 @@ rule qc_bed:
         plink \
             --bfile ${{in_filename}} \
             --make-bed \
+            # biallelic only to avoid downstream errors about 3+ alleles
+            --biallelic-only \
             --maf 0.01 \
             --geno 0.01 \
             --hwe 0.000001 \
