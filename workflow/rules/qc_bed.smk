@@ -18,6 +18,7 @@ rule qc_bed:
             --bfile ${{in_filename}} \
             --make-bed \
             --biallelic-only \
+            --set-missing-var-ids @:#\$1,\$2 \
             --maf 0.01 \
             --geno 0.01 \
             --hwe 0.000001 \
@@ -28,4 +29,5 @@ rule qc_bed:
         """
 
 # --biallelic-only to avoid downstream errors about 3+ alleles
+# --set-missing-var-ids @:#\$1,\$2 to rename missing ids
 # --allow-extra-chr required to avoid Error: Invalid chromosome code 'NA' on line 1 of .bim file.
