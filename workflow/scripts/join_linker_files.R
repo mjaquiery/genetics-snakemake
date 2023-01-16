@@ -1,7 +1,7 @@
 # Join together two linker files because of data corruption redownloading saga
-original <- commandArgs(T)[1]
-new <- commandArgs(T)[2]
-to <- commandArgs(T)[3]
+original <- commandArgs(T)[2]
+new <- commandArgs(T)[3]
+to <- commandArgs(T)[4]
 
 print(paste("original:", original))
 print(paste("new:", new))
