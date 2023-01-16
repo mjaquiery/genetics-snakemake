@@ -15,4 +15,4 @@ n <- read_sav(new)
 
 out <- o %>% left_join(n, by="cidB2677", suffix=c('.x', ''))
 
-write.csv(out, to)
+write_csv(out, to)
