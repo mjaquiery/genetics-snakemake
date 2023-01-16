@@ -3,6 +3,10 @@ original <- commandArgs()[1]
 new <- commandArgs()[2]
 to <- commandArgs()[3]
 
+print(paste("original:", original)
+print(paste("new:", new)
+print(paste("to:", to)
+
 library('haven')
 library('tidyverse')
 
