@@ -10,5 +10,6 @@ rule copy_data:
     shell:
         """
         echo "copy {input}/*chr{wildcards.CHR}.bgen -> {output}"
-        cp {input}/*chr{wildcards.CHR}.bgen {output}
+        shopt -s extglob
+        cp {input}/*chr?(0){wildcards.CHR}.bgen {output}
         """
