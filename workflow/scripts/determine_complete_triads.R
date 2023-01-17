@@ -40,8 +40,14 @@ for (id in ids) {
 df_in <- all_ids %>%
   mutate(role = str_extract(ID_1, "[FMAB]$")) %>%
   filter(!is.na(role)) %>%
-  mutate(id = str_extract(ID_1, "\\d+")) %>%
-  mutate(id = as.numeric(id))
+  # handle different id structure for gi_1000g_g0p ids
+  mutate(id = map_chr(ID_1, function(id) {
+    if (str_starts(id, "gi_1000g_g0p")) {
+      str_remove(id, "[FMAB]$")
+    } else {
+      str_extract(id, "\\d+")
+    }
+  }))
 
 print("input:")
 head(df_in)
@@ -52,7 +58,7 @@ df <- df_in %>%
     id, source,
     function(id, source) {
       if (id %in% linkfile[[source]])
-        as.numeric(linkfile[linkfile[[source]] == id, ncol(linkfile)][1])
+        as.numeric(linkfile[which(linkfile[[source]] == id), ncol(linkfile)][1])
       else
         -1
     }

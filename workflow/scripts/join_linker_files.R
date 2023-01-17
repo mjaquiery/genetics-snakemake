@@ -13,6 +13,9 @@ library('tidyverse')
 o <- read.csv(original)
 n <- read_sav(new)
 
-out <- o %>% left_join(n, by="cidB2677", suffix=c('.x', ''))
+out <- o %>%
+  left_join(n, by = "cidB2677", suffix = c('.x', '')) %>%
+  select(-cidB2677, -qlet, cidB2677) %>%
+  unique()
 
 write_csv(out, to)
