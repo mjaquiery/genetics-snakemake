@@ -6,8 +6,8 @@ gwas_file: '/users/k2260401/alspac/am/data/gwas.tsv'
 
 data_dirs:
   gi_1000g_g0p:
-    bgen_dir: '/users/k2260401/alspac/genetics/am_2023'
-    sample_file: '/users/k2260401/alspac/genetics/am_2023/swapped.sample'
+    bgen_dir: '/users/k2260401/alspac/genetics/am_2023/gi_1000g_g0p'
+    sample_file: '/users/k2260401/alspac/genetics/am_2023/gi_1000g_g0p/swapped.sample'
   gi_1000g_g0m_g1:
     bgen_dir: '/users/k2260401/alspac/genetics/gi_1000g_g0m_g1/dosage_bgen'
     sample_file: '/users/k2260401/alspac/genetics/gi_1000g_g0m_g1/swapped.sample'
