@@ -17,7 +17,7 @@ rule qc_bed:
         plink \
             --bfile ${{in_filename}} \
             --make-bed \
-            --biallelic-only \
+            --biallelic-only list \
             --set-missing-var-ids @:#\$1,\$2 \
             --maf 0.01 \
             --geno 0.01 \
