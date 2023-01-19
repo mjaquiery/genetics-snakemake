@@ -13,7 +13,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink --bfile ${{in_filename}} --merge-list {input.list} --make-bed --biallelic-only list --set-missing-var-ids @:#\$1,\$2 --out ${{out_filename}} --allow-extra-chr --flip-scan --exclude results/{wildcards.SOURCE}/all-merge.missnp
+        plink2 --bfile ${{in_filename}} --pmerge-list {input.list} --make-bed --out ${{out_filename}} --merge-max-allele-ct 2
         """
 
 rule make_mergelist:
@@ -31,5 +31,6 @@ rule make_mergelist:
         import os
         with open(str(output), "w+") as list_file:
             targets = [os.path.splitext(f)[0] for f in input]
-            print(targets)
-            list_file.write("\n".join(targets))
+            split_targets = [f"{x}.bed {x}.bim {x}.fam" for x in targets]
+            print(split_targets)
+            list_file.write("\n".join(split_targets))
