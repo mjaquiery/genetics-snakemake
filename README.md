@@ -96,3 +96,8 @@ cp -r ~/alspac/genetics/gi_1000g_g0p/dosage_bgen results/gi_1000g_g0p/bgen
 ```
 
 They also need to be renamed from `filtered_data_chr#.bgen` to `chr_#.bgen`.
+
+## Notes
+
+- `plink1.9` and `plink2.0` are both required (sorry), and need to be available as commands in the runtime environment
+- `PRSice` should be installed to `~/.tools/prsice/`
