@@ -13,10 +13,12 @@ rule calculate_valid_snps:
         echo "Calculate PRS with PRSice:"
         in_filename={input.bed}
         in_filename=${{in_filename%.*}}
+        out_filename={output}
+        out_filename=${{out_filename%.*}}
         Rscript ~/.tools/prsice/PRSice.R \
             --prsice ~/.tools/prsice/PRSice_linux \
             --base {input.gwas} \
-            --out {output} \
+            --out ${{out_filename}} \
             --target ${{in_filename}} \
             --snp rsID \
             --base-maf MAF:0.01 \
