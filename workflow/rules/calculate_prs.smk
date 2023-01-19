@@ -28,7 +28,7 @@ rule calculate_valid_snps:
             --bar-levels 1 \
             --thread 1 \
             --all-score \
-            --fastscore            
+            --fastscore || true  # ignore error we rerun below to handle
         """
 
 rule calculate_prs:
