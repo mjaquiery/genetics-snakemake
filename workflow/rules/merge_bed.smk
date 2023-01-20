@@ -13,7 +13,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --bfile ${{in_filename}} --pmerge-list {input.list} --make-bed --out ${{out_filename}} --merge-max-allele-ct 2
+        plink2 --bfile ${{in_filename}} --pmerge-list {input.list} --make-bed --out ${{out_filename}} --merge-max-allele-ct 2 --rm-dup --allow-extra-chr ['0']
         """
 
 rule make_mergelist:
