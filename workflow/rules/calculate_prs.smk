@@ -23,7 +23,7 @@ rule calculate_valid_snps:
             --snp rsID \
             --base-maf MAF:0.01 \
             --beta \
-            --binary-target T \
+            --binary-target F \
             --clump-kb 250kb \
             --no-regress \
             --upper 1 \
