@@ -48,10 +48,10 @@ rule make_recode_lists:
         """
         DIR="{wildcards.OUTPUT_DIR}/recode_map"
         wget ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b150_GRCh37p13/VCF/common_all_20170710.vcf.gz \
-            --output-document=$DIR/common_all_20170710.vcf.gz
+            --output-document="$DIR/common_all_20170710.vcf.gz"
         #The zgrep command lets you search the contents of a compressed file without extracting the contents first.
-        zgrep -v "^##" $DIR/common_all_20170710.vcf.gz | cut - f1 - 3 > $DIR/recode_map.txt
+        zgrep -v "^##" "$DIR/common_all_20170710.vcf.gz" | cut -f1-3 > "$DIR/recode_map.txt"
 
         #use awk to filter based on the value of a particular column:
-        awk '{{print $1":"$2"\t"$3}}' < $DIR/recode_map.txt > {output}
+        awk '{{print $1":"$2"\t"$3}}' < "$DIR/recode_map.txt" > {output}
     """
