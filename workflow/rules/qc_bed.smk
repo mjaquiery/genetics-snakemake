@@ -8,7 +8,7 @@ rule qc_bed:
         recode=os.path.join("{OUTPUT_DIR}", "recode_map", "plink_recode_map.tsv")
     output:
         raw=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed_qc", "chr_{CHR}.bed"),
-        recoded=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "recoded_chr_{CHR}.bed")
+        recoded=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "chr_{CHR}_recoded.bed")
     shell:
         """
         in_filename={input.bed}
