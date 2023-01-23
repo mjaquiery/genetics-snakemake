@@ -4,7 +4,7 @@ rule calculate_valid_snps:
     resources:
         mem="150G"
     input:
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_recoded.bed"),
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score.valid")
@@ -40,7 +40,7 @@ rule calculate_prs:
     resources:
         mem="150G"
     input:
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_recoded.bed"),
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv"),
         valid=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score.valid")
     output:
