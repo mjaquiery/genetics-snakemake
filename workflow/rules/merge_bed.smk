@@ -26,7 +26,7 @@ rule make_mergelist:
     input:
         lambda wildcards: expand(
             os.path.join("{OUTPUT_DIR}","{SOURCE}","bed_qc","chr_{i}.bed"),
-            i=[x for x in range(1, 22) if x != 8],  # skip chr 8 while it's corrupted!
+            i=range(1, 22),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
         )  # note we leave off chr_22
