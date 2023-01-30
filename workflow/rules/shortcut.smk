@@ -20,7 +20,7 @@ rule filter_vcf:
         temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","filtered_chr_{CHR}.vcf"))
     shell:
         """
-        WARNING: This step is skipped for the moment; PRS scores will be calculated for ALL participants!
+        echo "WARNING: This step is skipped for the moment; PRS scores will be calculated for ALL participants!"
         cp {input} {output}
         """
 
