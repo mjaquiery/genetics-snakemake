@@ -47,6 +47,10 @@ rule all:
         os.path.join(config['output_dir'], "gi_1000g_g0m_g1", "prs.all_score")
         # os.path.join(f"{config['output_dir']}", "relatedness", "related.out")
 
+rule g0m:
+    input:
+        os.path.join(config['output_dir'],"gi_1000g_g0m_g1","prs.all_score")
+
 # Remove intermediate directories
 rule clean:
     shell:

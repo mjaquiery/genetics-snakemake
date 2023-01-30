@@ -5,7 +5,7 @@ rule bgen_to_vcf:
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file']
     output:
-        temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
+        os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf")
     shell:
         """
         out_filename={output}
