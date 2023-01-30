@@ -6,7 +6,7 @@ rule copy_data:
     input:
         lambda wildcards: os.path.join(config['data_dirs'][wildcards.SOURCE]['bgen_dir'])
     output:
-        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen")
+        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen"))
     shell:
         """
         echo "copy {input}/*chr{wildcards.CHR}.bgen -> {output}"
