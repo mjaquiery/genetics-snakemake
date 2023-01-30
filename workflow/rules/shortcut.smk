@@ -21,7 +21,7 @@ rule filter_vcf:
     shell:
         """
         echo "WARNING: This step is skipped for the moment; PRS scores will be calculated for ALL participants!"
-        cp {input} {output}
+        mv {input} {output}
         """
 
 rule vcf_to_bed:
