@@ -20,8 +20,6 @@ print(paste("snakemake@output$vcf:", snakemake@output$vcf))
 input_file <- snakemake@input$vcf
 output_file <- snakemake@output$vcf
 
-input_file <- "G:/Documents/Programs/Python/genetics-snakemake/data/tmp_22_g0m_mini.vcf"
-
 header <- readr::read_lines(input_file, n_max = 3)
 col_names <- str_remove(header[3], "#") %>%
   str_split("\t")
