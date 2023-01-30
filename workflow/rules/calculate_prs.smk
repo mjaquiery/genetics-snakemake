@@ -68,3 +68,12 @@ rule calculate_prs:
             --fastscore \
             --extract {input.valid}           
         """
+
+# bgen -> vcf
+# plink2 --bgen results/c22.bgen ref-last snpid-chr --sample results/m.sample --export vcf --out results/c22
+# vcf -> filtered_vcf
+# Rscript remove_unwanted_ids
+# filtered_vcf -> bed
+# plink2 --vcf results/c22.vcf --make-bed --out results/c22
+# bed -> PRS scores
+# Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base results/gwas/gwas-03-disamb.tsv --out results/tmp --snp rsID --no-regress --all-score --fastscore --beta --target results/c# --extract results/tmp.valid
