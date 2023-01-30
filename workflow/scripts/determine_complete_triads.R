@@ -43,7 +43,7 @@ df_in <- all_ids %>%
   # handle different id structure for gi_1000g_g0p ids
   mutate(id = map_chr(ID_1, function(id) {
     if (str_starts(id, "gi_1000g_g0p")) {
-      str_remove(id, "[FMAB]$")
+      str_remove(id, "gi_1000g_g0p_") %>% str_remove("[FMAB]$")
     } else {
       str_extract(id, "\\d+")
     }
