@@ -8,7 +8,7 @@ rule extract_id_list:
     script:
         "../scripts/extract_id_column.R"
 
-rule subset_bgen:
+rule subset_by_ids:
     group:
         "chr_processing"
     input:
@@ -16,19 +16,36 @@ rule subset_bgen:
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
         ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
     output:
-        bgen=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bgen"),
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bed")
+        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "vcf", "chr_{CHR}.vcf"))
     shell:
         """
-        echo "Subsetting bgen file {input.bgen} -> {output.bgen}"
+        echo "Subsetting bgen file {input.bgen} -> {output}"
         echo "Sample file {input.sample}"
         echo "ID whitelist from {input.ids}"
         # module load qctool/2022-04-07-gcc-9.4.0  # we use a local install because the cluster version is broken
-        qctool -g {input.bgen} -s {input.sample} -og {output.bgen} -incl-samples {input.ids}
-        out_filename={output.bed}
-        out_filename=${{out_filename%.*}}
-        echo "Converting bgen to bed: {output.bgen} -> {output.bed}"
-        plink2 --bgen {output.bgen} ref-unknown --sample {input.sample} --make-bed --out ${{out_filename}} --missing-code -9
-        # remove original bgen to conserve disk space
-        # rm -f {input.bgen}
+        qctool -g {input.bgen} -s {input.sample} -og {output} -incl-samples {input.ids}
         """
+
+rule repair_vcf:
+    input:
+        vcf=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "vcf", "chr_{CHR}.vcf")
+    output:
+        vcf=temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "vcf", "fixed_chr_{CHR}.vcf"))
+    script:
+        "../scripts/repair_qctool_vcf.R"
+
+rule convert_to_bed:
+    group:
+        "chr_processing"
+    input:
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "vcf", "fixed_chr_{CHR}.vcf")
+    output:
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bed")
+    shell:
+        """
+        out_filename={output}
+        out_filename=${{out_filename%.*}}
+        # echo "Converting bgen to bed: {input} -> {output}"
+        plink2 --vcf {input} --make-bed --out ${{out_filename}}
+        """
+
