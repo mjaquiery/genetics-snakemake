@@ -70,6 +70,18 @@ f <- f %>% mutate(ID = rsID) %>% select(everything(), -rsID)
 print("Converted VCF structure:")
 print(head(f))
 
+print("Handling swapped ref/alt alleles")
+na <- f %>% filter(is.na(ID))
+f <- f %>% filter(!is.na(ID))
+
+na <- na %>%
+  mutate(tmp = REF, REF = ALT, ALT = tmp) %>%
+  select(-tmp)
+na <- left_join(na, map, by = c("CHROM", "POS", "REF", "ALT"))
+na <- na %>% mutate(ID = rsID) %>% select(everything(), -rsID)
+
+f <- bind_rows(f, na) %>% arrange(POS)
+
 readr::write_lines(header, output_file)
 readr::write_delim(f, output_file, delim = "\t", append = T)
 
