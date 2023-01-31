@@ -57,12 +57,15 @@ map <- readr::read_delim(
 print("Mapper structure:")
 print(head(map))
 
-f <- f %>%
-  left_join(map, by = c("CHROM", "POS", "REF", "ALT"))
-  mutate(ID = rsID) %>%
-  select(everything(), -rsID)
+f <- map %>%
+  left_join(f, by = c("CHROM", "POS", "REF", "ALT"))
 
-print("Converted VCF data")
+print("Joined structure:")
+print(head(f))
+
+f <- f %>% mutate(ID = rsID) %>% select(everything(), -rsID)
+
+print("Converted VCF structure:")
 print(head(f))
 
 readr::write_lines(header, output_file)
