@@ -76,7 +76,7 @@ rule prs_valid:
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv"),
         valid=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     output:
-        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.best")
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
         bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
