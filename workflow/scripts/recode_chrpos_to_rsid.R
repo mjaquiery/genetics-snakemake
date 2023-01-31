@@ -45,6 +45,8 @@ f <- readr::read_delim(
 print("VCF structure:")
 print(head(f))
 
+chr_whitelist <- unique(f$CHROM)
+
 map <- readr::read_delim(
   map_file,
   delim = "\t",
@@ -52,13 +54,13 @@ map <- readr::read_delim(
   col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"),
   col_types = cols(.default = col_character())
 ) %>%
-  select(CHROM, POS, rsID = ID, REF, ALT)
+  select(CHROM, POS, rsID = ID, REF, ALT) %>%
+  filter(CHROM %in% chr_whitelist)
 
 print("Mapper structure:")
 print(head(map))
 
-f <- map %>%
-  left_join(f, by = c("CHROM", "POS", "REF", "ALT"))
+f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 
 print("Joined structure:")
 print(head(f))
