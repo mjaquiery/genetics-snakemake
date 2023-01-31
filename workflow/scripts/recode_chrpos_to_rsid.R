@@ -29,8 +29,19 @@ map <- readr::read_delim(
 print("Mapper structure:")
 print(head(map))
 
-header <- readr::read_lines(input_file, n_max = 3)
-col_names <- str_remove(header[3], "#") %>%
+header_of_file <- readr::read_lines(input_file, n_max = 300)
+header <- list()
+for (x in header_of_file) {
+  if (str_starts(x, '#'))
+    header[length(header) + 1] <- x
+  else
+    break
+}
+
+print("VCF header:")
+print(header)
+
+col_names <- str_remove(header[length(header)], "#") %>%
   str_split("\t")
 
 f <- readr::read_delim(input_file, delim = "\t", skip = 3, col_names = col_names[[1]])
