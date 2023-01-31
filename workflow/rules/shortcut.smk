@@ -56,17 +56,9 @@ rule bgen_to_vcf:
         fi
         plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
         if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
-            Rscript -e ../scripts/recode_chrpos_to_rsid.R --args {output} {input.map} {output}
+            Rscript -e "{workflow.current_basedir}/../scripts/recode_chrpos_to_rsid.R" --args {output} {input.map} {output}
         fi
         """
-
-rule relabel_variant_ids:
-    input:
-        vcf=temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
-    output:
-        vcf=temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","remapped_chr_{CHR}.vcf"))
-    script:
-        "../scripts/recode_chrpos_to_rsid.R"
 
 
 rule filter_vcf:
