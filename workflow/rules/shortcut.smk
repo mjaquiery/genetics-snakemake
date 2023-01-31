@@ -1,9 +1,40 @@
 # Calculate Polygenic Risk Scores
 
+rule download_code_map:
+    output:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf.gz")
+    shell:
+        """
+        wget ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b150_GRCh37p13/VCF/common_all_20170710.vcf.gz --output-document="{output}"
+        """
+
+rule extract_recode_map:
+    input:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf.gz")
+    output:
+        os.path.join("{OUTPUT_DIR}","recode_map","recode_map.txt")
+    shell:
+        """
+        #The zgrep command lets you search the contents of a compressed file without extracting the contents first.
+        zgrep -v "^##" "{input}" | cut -f1-3 > "{output}"
+        """
+
+rule output_recode_lists:
+    input:
+        os.path.join("{OUTPUT_DIR}","recode_map","recode_map.txt")
+    output:
+        os.path.join("{OUTPUT_DIR}", "recode_map", "plink_recode_map.tsv")
+    shell:
+        """
+        #use awk to filter based on the value of a particular column:
+        awk '{{print $1":"$2"\t"$3}}' < "{input}" > {output}
+    """
+
 rule bgen_to_vcf:
     input:
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
-        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file']
+        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
+        names=os.path.join("{OUTPUT_DIR}", "recode_map", "plink_recode_map.tsv")
     output:
         temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
     shell:
@@ -15,7 +46,7 @@ rule bgen_to_vcf:
         if [[ {wildcards.SOURCE} == *"g0m"* ]]; then
           bgen_arg="${{bgen_arg}} snpid-chr"
         fi
-        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
+        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}} --update-name {names}"
         """
 
 rule filter_vcf:
@@ -61,7 +92,6 @@ rule prs:
         out_filename=${{out_filename%.*}}
         Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} || true
         """
-
 
 rule prs_valid:
     resources:
