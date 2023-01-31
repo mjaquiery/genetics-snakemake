@@ -43,7 +43,7 @@ f <- readr::read_delim(
 )
 
 print("VCF structure:")
-print(head(f))
+print(f)
 
 chr_whitelist <- unique(f$CHROM)
 
@@ -58,29 +58,45 @@ map <- readr::read_delim(
   filter(CHROM %in% chr_whitelist)
 
 print("Mapper structure:")
-print(head(map))
+print(map)
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 
 print("Joined structure:")
-print(head(f))
+print(f)
 
 f <- f %>% mutate(ID = rsID) %>% select(everything(), -rsID)
 
 print("Converted VCF structure:")
-print(head(f))
+print(f)
 
 print("Handling swapped ref/alt alleles")
 na <- f %>% filter(is.na(ID))
 f <- f %>% filter(!is.na(ID))
 
+print("OKAY rows:")
+print(f)
+
 na <- na %>%
   mutate(tmp = REF, REF = ALT, ALT = tmp) %>%
   select(-tmp)
+
+print("NA rows:")
+print(na)
+
 na <- left_join(na, map, by = c("CHROM", "POS", "REF", "ALT"))
 na <- na %>% mutate(ID = rsID) %>% select(everything(), -rsID)
 
 f <- bind_rows(f, na) %>% arrange(POS)
+
+print("Output:")
+print(f)
+
+na <- na %>% filter(is.na(ID))
+if (nrow(na)) {
+  print(glue("{nrow(f %>% filter(is.na(ID)))} rows with NA ID"))
+  print(na)
+}
 
 readr::write_lines(header, output_file)
 readr::write_delim(f, output_file, delim = "\t", append = T)
