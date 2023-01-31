@@ -28,7 +28,7 @@ include: "rules/clean_gwas.smk"
 # include: "rules/subset-bgen.smk"
 # include: "rules/qc_bed.smk"
 # include: "rules/examine-missingness.smk"
-# include: "rules/merge_bed.smk"
+include: "rules/merge_bed.smk"
 # include: "rules/calculate_prs.smk"
 
 include: "rules/shortcut.smk"
