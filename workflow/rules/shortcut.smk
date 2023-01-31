@@ -8,6 +8,14 @@ rule download_code_map:
         wget ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b150_GRCh37p13/VCF/common_all_20170710.vcf.gz --output-document="{output}"
         """
 
+rule unzip_code_map:
+    input:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf.gz")
+    output:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf")
+    shell:
+        "gunzip {input}"
+
 rule extract_recode_map:
     input:
         os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf.gz")
@@ -32,9 +40,9 @@ rule output_recode_lists:
 
 rule bgen_to_vcf:
     input:
+        map=os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf"),
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
-        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        names=os.path.join("{OUTPUT_DIR}", "recode_map", "plink_recode_map.tsv")
+        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file']
     output:
         temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
     shell:
@@ -46,8 +54,20 @@ rule bgen_to_vcf:
         if [[ {wildcards.SOURCE} == *"g0m"* ]]; then
           bgen_arg="${{bgen_arg}} snpid-chr"
         fi
-        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}" --update-name "{input.names}"
+        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
+        if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
+            Rscript -e ../scripts/recode_chrpos_to_rsid.R --args {output} {input.map} {output}
+        fi
         """
+
+rule relabel_variant_ids:
+    input:
+        vcf=temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
+    output:
+        vcf=temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","remapped_chr_{CHR}.vcf"))
+    script:
+        "../scripts/recode_chrpos_to_rsid.R"
+
 
 rule filter_vcf:
     input:
