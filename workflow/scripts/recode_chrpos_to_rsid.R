@@ -31,14 +31,15 @@ col_names <- str_remove(header[length(header)], "#") %>%
 
 print("VCF header:")
 print(header[1:(length(header) - 1)])
-print(glue("Plus {length(col_names[[1]])} column names starting {paste(col_names[[1]][1:6], collapse = ', ')}"))
+print(glue("Plus {length(col_names[[1]])} column names starting {paste(col_names[[1]][1:9], collapse = ', ')}"))
 
 
 f <- readr::read_delim(
   input_file,
   delim = "\t",
   comment = "#",
-  col_names = col_names[[1]]
+  col_names = col_names[[1]],
+  col_types = cols(.default = col_character())
 )
 
 print("VCF structure:")
@@ -48,7 +49,8 @@ map <- readr::read_delim(
   map_file,
   delim = "\t",
   comment = "#",
-  col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")
+  col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"),
+  col_types = cols(.default = col_character())
 ) %>%
   select(CHROM, POS, rsID = ID, REF, ALT)
 
