@@ -17,6 +17,33 @@ print(paste("input_file:", input_file))
 print(paste("map_file:", map_file))
 print(paste("output_file:", output_file))
 
+header_of_file <- readr::read_lines(input_file, n_max = 300)
+header <- list()
+for (x in header_of_file) {
+  if (str_starts(x, '#'))
+    header[length(header) + 1] <- x
+  else
+    break
+}
+
+col_names <- str_remove(header[length(header)], "#") %>%
+  str_split("\t")
+
+print("VCF header:")
+print(header[1:(length(header) - 1)])
+print(glue("Plus {length(col_names[[1]])} column names starting {col_names[[1]][1:6]}"))
+
+
+f <- readr::read_delim(
+  input_file,
+  delim = "\t",
+  comment = "#",
+  col_names = col_names[[1]]
+)
+
+print("VCF structure:")
+print(head(f))
+
 map <- readr::read_delim(
   map_file,
   delim = "\t",
@@ -28,26 +55,6 @@ map <- readr::read_delim(
 
 print("Mapper structure:")
 print(head(map))
-
-header_of_file <- readr::read_lines(input_file, n_max = 300)
-header <- list()
-for (x in header_of_file) {
-  if (str_starts(x, '#'))
-    header[length(header) + 1] <- x
-  else
-    break
-}
-
-print("VCF header:")
-print(header)
-
-col_names <- str_remove(header[length(header)], "#") %>%
-  str_split("\t")
-
-f <- readr::read_delim(input_file, delim = "\t", skip = 3, col_names = col_names[[1]])
-
-print("VCF structure:")
-print(head(f))
 
 f <- f %>%
   left_join(
