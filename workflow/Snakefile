@@ -49,11 +49,11 @@ rule all:
 
 rule g0m:
     input:
-        os.path.join(config['output_dir'],"gi_1000g_g0m_g1","prs.all_score")
+        os.path.join(config['output_dir'],"gi_1000g_g0m_g1","prs.best")
 
 rule g0p:
     input:
-        os.path.join(config['output_dir'],"gi_1000g_g0p","prs.all_score")
+        os.path.join(config['output_dir'],"gi_1000g_g0p","prs.best")
 
 # Remove intermediate directories
 rule clean:
