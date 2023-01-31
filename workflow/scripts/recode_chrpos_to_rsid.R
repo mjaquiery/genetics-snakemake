@@ -31,7 +31,7 @@ col_names <- str_remove(header[length(header)], "#") %>%
 
 print("VCF header:")
 print(header[1:(length(header) - 1)])
-print(glue("Plus {length(col_names[[1]])} column names starting {col_names[[1]][1:6]}"))
+print(glue("Plus {length(col_names[[1]])} column names starting {paste(col_names[[1]][1:6], collapse = ', ')}"))
 
 
 f <- readr::read_delim(
@@ -50,17 +50,13 @@ map <- readr::read_delim(
   comment = "#",
   col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")
 ) %>%
-  mutate(chrpos = glue("{CHROM}:{POS}")) %>%
-  select(chrpos, rsID = ID, REF, ALT)
+  select(CHROM, POS, rsID = ID, REF, ALT)
 
 print("Mapper structure:")
 print(head(map))
 
 f <- f %>%
-  left_join(
-    map,
-    by = c("ID" = "chrpos", "REF" = "REF", "ALT" = "ALT")
-  )
+  left_join(map, by = c("CHROM", "POS", "REF", "ALT"))
   mutate(ID = rsID) %>%
   select(everything(), -rsID)
 
