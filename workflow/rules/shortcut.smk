@@ -8,10 +8,10 @@ rule bgen_to_vcf:
         temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
     shell:
         """
-        out_filename={output}
-        out_filename=${{out_filename%.*}}
+        out_filename="{output}"
+        out_filename="${{out_filename%.*}}"
         # g0m files require snpid-chr argument, g0p files do not
-        bgen_arg={input.bgen} ref-last
+        bgen_arg="{input.bgen} ref-last"
         if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
           bgen_arg="${{bgen_arg}} snpid-chr"
         fi
