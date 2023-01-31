@@ -15,7 +15,7 @@ rule bgen_to_vcf:
         if [[ {wildcards.SOURCE} == *"g0m"* ]]; then
           bgen_arg="${{bgen_arg}} snpid-chr"
         fi
-        plink2 --bgen "${{bgen_arg}}" --sample {input.sample} --export vcf --out "${{out_filename}}"
+        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
         """
 
 rule filter_vcf:
