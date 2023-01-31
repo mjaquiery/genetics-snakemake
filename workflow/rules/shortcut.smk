@@ -10,7 +10,12 @@ rule bgen_to_vcf:
         """
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        plink2 --bgen {input.bgen} ref-last snpid-chr --sample {input.sample} --export vcf --out "${{out_filename}}"
+        # g0m files require snpid-chr argument, g0p files do not
+        bgen_arg={input.bgen} ref-last
+        if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
+          bgen_arg="${{bgen_arg}} snpid-chr"
+        fi
+        plink2 --bgen "${{bgen_arg}}" snpid-chr --sample {input.sample} --export vcf --out "${{out_filename}}"
         """
 
 rule filter_vcf:
