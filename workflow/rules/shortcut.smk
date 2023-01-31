@@ -77,5 +77,5 @@ rule prs_valid:
         bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} --extract results/tmp.valid
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} --extract {input.valid}
         """
