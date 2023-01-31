@@ -58,7 +58,7 @@ rule bgen_to_vcf:
         fi
         plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
         if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
-            Rscript -e "{params.rscript}" --args "{output}" "{input.map}" "{output}"
+            Rscript "{params.rscript}" --args "{output}" "{input.map}" "{output}"
         fi
         """
 
