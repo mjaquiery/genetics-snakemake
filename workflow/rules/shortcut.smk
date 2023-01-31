@@ -42,7 +42,9 @@ rule bgen_to_vcf:
     input:
         map=os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf"),
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
-        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file']
+        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
+    params:
+        rscript=workflow.source_path("../scripts/recode_chrpos_to_rsid.R")
     output:
         temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","chr_{CHR}.vcf"))
     shell:
@@ -56,7 +58,7 @@ rule bgen_to_vcf:
         fi
         plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
         if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
-            Rscript -e "{workflow.current_basedir}/../scripts/recode_chrpos_to_rsid.R" --args {output} {input.map} {output}
+            Rscript -e "{rscript}" --args {output} {input.map} {output}
         fi
         """
 
