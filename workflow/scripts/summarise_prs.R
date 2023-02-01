@@ -51,10 +51,12 @@ prs_wide <- pivot_wider(
 prs_wide_filtered <- prs_wide %>%
   filter(!is.na(M) & !is.na(`F`) & !is.na(A))
 prs_long_filtered <- prs_long %>%
-  filter(cidB2677 %in% prs_wide_filtered$cidB2677)
+  filter(cidB2677 %in% prs_wide_filtered$cidB2677) %>%
+  mutate(src = if_else(str_starts(IID, 'gi_'), 'g0p', 'g0m'))
 
 write_tsv(prs_wide_filtered, paste0(root, "prs.tsv"))
 
+# examine output
 range(prs_long$Pt_1)
 
 ggplot(prs_long, aes(x = Pt_1, fill = role)) +
@@ -67,3 +69,7 @@ cor(prs_wide_filtered$M, prs_wide_filtered$B, use = "pairwise.complete.obs")
 cor(prs_wide_filtered$M, prs_wide_filtered$`F`)
 cor(prs_wide_filtered$`F`, prs_wide_filtered$A)
 cor(prs_wide_filtered$`F`, prs_wide_filtered$B, use = "pairwise.complete.obs")
+
+prs_long_filtered %>%
+  group_by(src, role) %>%
+  summarise(n = n())

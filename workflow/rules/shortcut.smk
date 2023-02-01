@@ -75,6 +75,7 @@ rule filter_vcf:
         """
 
 rule vcf_to_bed:
+    priority: 100
     input:
         os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","filtered_chr_{CHR}.vcf")
     output:
