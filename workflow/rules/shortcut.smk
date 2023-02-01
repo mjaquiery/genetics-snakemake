@@ -83,7 +83,7 @@ rule vcf_to_bed:
         """
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        plink2 --vcf {input} --make-bed --out "${{out_filename}} --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05"
+        plink2 --vcf {input} --make-bed --out "${{out_filename}}" --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:
