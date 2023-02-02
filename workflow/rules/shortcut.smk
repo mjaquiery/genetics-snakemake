@@ -79,13 +79,27 @@ rule vcf_to_bed:
     input:
         os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","filtered_chr_{CHR}.vcf")
     output:
-        os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed")
+        bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
+        fam=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.fam")
     shell:
         """
         out_filename={output}
         out_filename=${{out_filename%.*}}
         plink2 --vcf {input} --make-bed --out "${{out_filename}}"
         """
+
+rule determine_valid_ids:
+    input:
+        lambda wildcards: expand(
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.fam"),
+            i=range(1,23),
+            OUTPUT_DIR=wildcards.OUTPUT_DIR,
+            SOURCE=wildcards.SOURCE
+        )
+    output:
+        os.path.join("{OUTPUT_DIR}","{SOURCE}","mergelist_ids.txt")
+    script:
+        "../scripts/find_complete_ids.R"
 
 rule make_mergelist:
     input:
@@ -109,7 +123,8 @@ rule make_mergelist:
 rule merge_bed:
     input:
         file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_22.bed"),
-        list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
+        list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt"),
+        ids=os.path.join("{OUTPUT_DIR}","{SOURCE}","mergelist_ids.txt")
     output:
         temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"))
     shell:
@@ -119,7 +134,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --bfile ${{in_filename}} --pmerge-list {input.list} --make-bed --out ${{out_filename}}
+        plink2 --bfile ${{in_filename}} --keep {input.ids} --pmerge-list {input.list} --make-bed --out ${{out_filename}}
         echo "QC for merged file"
         plink2 --bfile ${{out_filename}} --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05 --make-bed --out ${{recoded_filename}}
         """
