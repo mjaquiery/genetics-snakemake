@@ -102,6 +102,7 @@ rule determine_valid_ids:
         "../scripts/find_complete_ids.R"
 
 rule strip_bed:
+    priority: 100
     input:
         file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bed"),
         ids=os.path.join("{OUTPUT_DIR}","{SOURCE}","mergelist_ids.txt")
