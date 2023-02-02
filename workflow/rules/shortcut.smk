@@ -102,10 +102,11 @@ rule prs:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     shell:
         """
+        smallest_fam="$(ls -SrqL {wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr*.fam | head -1)"
         bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} || true
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}},${{smallest_fam}} || true
         """
 
 rule prs_valid:
@@ -124,8 +125,9 @@ rule prs_valid:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
+        smallest_fam="$(ls -SrqL {wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr*.fam | head -1)"
         bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} --extract {input.valid}
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}},${{smallest_fam}} --extract {input.valid}
         """
