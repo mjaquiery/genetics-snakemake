@@ -79,7 +79,7 @@ rule vcf_to_bed:
     input:
         os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","filtered_chr_{CHR}.vcf")
     output:
-        temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"))
+        os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed")
     shell:
         """
         out_filename={output}
@@ -111,7 +111,7 @@ rule merge_bed:
         file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_22.bed"),
         list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     output:
-        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
+        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"))
     shell:
         """
         in_filename={input.file}
