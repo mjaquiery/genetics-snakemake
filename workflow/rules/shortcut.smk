@@ -79,13 +79,13 @@ rule vcf_to_bed:
     input:
         os.path.join("{OUTPUT_DIR}","{SOURCE}","vcf","filtered_chr_{CHR}.vcf")
     output:
-        bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
+        bed=temp(os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed")),
         fam=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.fam")
     shell:
         """
         out_filename={output.bed}
         out_filename=${{out_filename%.*}}
-        plink2 --vcf {input} --make-bed --out "${{out_filename}}"
+        plink2 --vcf {input} --make-bed --out "${{out_filename}} --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05 --make-bed"
         """
 
 rule determine_valid_ids:
@@ -101,75 +101,61 @@ rule determine_valid_ids:
     script:
         "../scripts/find_complete_ids.R"
 
-rule make_mergelist:
+rule strip_bed:
     input:
-        lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.bed"),
-            i=range(1, 22),
-            OUTPUT_DIR=wildcards.OUTPUT_DIR,
-            SOURCE=wildcards.SOURCE
-        )  # note we leave off chr_22
-    output:
-        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
-    run:
-        print(f"Making mergelist -> {output}")
-        import os
-        with open(str(output), "w+") as list_file:
-            targets = [os.path.splitext(f)[0] for f in input]
-            split_targets = [f"{x}.bed {x}.bim {x}.fam" for x in targets]
-            print(split_targets)
-            list_file.write("\n".join(split_targets))
-
-rule merge_bed:
-    input:
-        file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_22.bed"),
-        list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt"),
+        file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bed"),
         ids=os.path.join("{OUTPUT_DIR}","{SOURCE}","mergelist_ids.txt")
     output:
-        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"))
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "stripped_chr_{CHR}.bed")
     shell:
         """
         in_filename={input.file}
         in_filename=${{in_filename%.*}}
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        echo "Merging .bed files"
-        plink2 --bfile ${{in_filename}} --keep {input.ids} --pmerge-list {input.list} --make-bed --out ${{out_filename}}
-        echo "QC for merged file"
-        plink2 --bfile ${{out_filename}} --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05 --make-bed --out ${{recoded_filename}}
+        echo "Stripping .bed file {input.file}"
+        plink2 --bfile ${{in_filename}} --keep {input.ids} --make-bed --out ${{out_filename}}
         """
 
 rule prs:
     resources:
         mem="150G"
     input:
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
+        bed=lambda wildcards: expand(
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","stripped_chr_{i}.bed"),
+            i=range(1,23),
+            OUTPUT_DIR=wildcards.OUTPUT_DIR,
+            SOURCE=wildcards.SOURCE
+        ),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     shell:
         """
-        in_filename={input.bed}
-        in_filename=${{in_filename%.*}}
+        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{in_filename}} || true
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} || true
         """
 
 rule prs_valid:
     resources:
         mem="150G"
     input:
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
+        bed=lambda wildcards: expand(
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","stripped_chr_{i}.bed"),
+            i=range(1,23),
+            OUTPUT_DIR=wildcards.OUTPUT_DIR,
+            SOURCE=wildcards.SOURCE
+        ),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv"),
         valid=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
-        in_filename={input.bed}
-        in_filename=${{in_filename%.*}}
+        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{in_filename}} --extract {input.valid}
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} --extract {input.valid}
         """
