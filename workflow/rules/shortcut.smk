@@ -56,7 +56,7 @@ rule bgen_to_vcf:
         if [[ {wildcards.SOURCE} == *"g0m"* ]]; then
           bgen_arg="${{bgen_arg}} snpid-chr"
         fi
-        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}"
+        plink2 --bgen ${{bgen_arg}} --sample {input.sample} --export vcf --out "${{out_filename}}" --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         if [[ {wildcards.SOURCE} == *"g0p"* ]]; then
             Rscript "{params.rscript}" --args "{output}" "{input.map}" "{output}"
         fi
@@ -84,7 +84,7 @@ rule vcf_to_bed:
         """
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        plink2 --vcf {input} --make-bed --out "${{out_filename}}" --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink2 --vcf {input} --make-bed --out "${{out_filename}}"
         """
 
 rule prs:
