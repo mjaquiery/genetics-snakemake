@@ -83,7 +83,7 @@ rule vcf_to_bed:
         fam=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.fam")
     shell:
         """
-        out_filename={output}
+        out_filename={output.bed}
         out_filename=${{out_filename%.*}}
         plink2 --vcf {input} --make-bed --out "${{out_filename}}"
         """

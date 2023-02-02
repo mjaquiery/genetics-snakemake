@@ -52,6 +52,10 @@ we should have `qctool` available as a command:
 qctool -help
 ```
 
+### Install bcftools from samtools
+
+http://www.htslib.org/download/
+
 ### Run the slurmtest script
 
 ```shell
