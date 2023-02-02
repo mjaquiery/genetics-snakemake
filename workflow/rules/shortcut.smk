@@ -133,7 +133,7 @@ rule prs:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     shell:
         """
-        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
+        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/stripped_chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
         Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} || true
@@ -155,7 +155,7 @@ rule prs_valid:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
-        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/chr_#"
+        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/stripped_chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
         Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} --extract {input.valid}
