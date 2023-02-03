@@ -25,7 +25,7 @@ rule clean_bim:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "cleaned_{CHR}")
     shell:
         """
-        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{output}"
+        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}"
         touch {output}
         """
 
