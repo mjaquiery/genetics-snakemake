@@ -33,4 +33,4 @@ f <- f %>% mutate(
 print("New format:")
 print(f)
 
-readr::write_tsv(output_file, col_names = F)
+readr::write_tsv(f, output_file, col_names = F)
