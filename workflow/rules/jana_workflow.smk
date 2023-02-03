@@ -1,9 +1,20 @@
 # Calculate Polygenic Risk Scores
 
+# Determine IDs that form part of a triad with partners who have genetic data
+rule determine_complete_triads:
+    input:
+        ids=[config['data_dirs'][d]['sample_file'] for d in config['data_dirs']],
+        link=os.path.join(config['linker_file'])
+    output:
+        os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
+    script:
+        "../scripts/determine_complete_triads.R"
+
 rule bgen_to_bed:
     input:
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
+        include_samples=os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
     output:
         bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
         bim=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bim"),
@@ -12,7 +23,7 @@ rule bgen_to_bed:
         """
         out_filename="{output.bed}"
         out_filename="${{out_filename%.*}}"
-        plink2 --bgen {input.bgen} ref-last --sample {input.sample} --make-bed --out "${{out_filename}}"
+        plink2 --bgen {input.bgen} ref-last --sample {input.sample} --make-bed --out "${{out_filename}} --keep {input.include_samples}"
         """
 
 rule clean_bim:
