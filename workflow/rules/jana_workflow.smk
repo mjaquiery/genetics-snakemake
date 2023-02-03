@@ -34,11 +34,19 @@ rule subset_by_ids:
         qctool -g {input.bgen} -s {input.sample} -og {output} -incl-samples {input.ids}
         """
 
+rule subset_sample_file:
+    input:
+        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
+        include_ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
+    output:
+        os.path.join("{OUTPUT_DIR}","{SOURCE}", "bgen", "trimmed.sample")
+    script:
+        "../scripts/filter_sample.R"
+
 rule bgen_to_bed:
     input:
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","filtered_chr_{CHR}.bgen"),
-        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        include_samples=os.path.join("{OUTPUT_DIR}","triad_ids_{SOURCE}.tsv")
+        sample=os.path.join("{OUTPUT_DIR}","{SOURCE}", "bgen", "trimmed.sample")
     output:
         bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
         bim=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bim"),
