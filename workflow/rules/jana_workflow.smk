@@ -105,7 +105,7 @@ rule make_mergelist:
         with open(str(output), "w+") as list_file:
             targets = [os.path.splitext(f)[0] for f in input['bed']]
             split_targets = [
-                f"{targets[i]}.bed {targets[i]}.bim {input['fam']}.fam" for i in range(len(targets))
+                f"{targets[i]}.bed {targets[i]}.bim {input['fam'][i]}.fam" for i in range(len(targets))
             ]
             print(split_targets)
             list_file.write("\n".join(split_targets))
