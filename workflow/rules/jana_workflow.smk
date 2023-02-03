@@ -69,7 +69,7 @@ rule clean_bim:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "exclude_snps_{CHR}.txt")
     shell:
         """
-        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}.x" "{output}"
+        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}" "{output}"
         """
 
 rule filter_variants:
