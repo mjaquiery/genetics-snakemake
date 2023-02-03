@@ -103,50 +103,36 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --bfile ${{in_filename}} --pmerge-list {input.list} --make-bed --out ${{out_filename}}
-        echo "QC for merged file"
-        plink2 --bfile ${{out_filename}} --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05 --make-bed --out ${{recoded_filename}}
+        plink2 --bfile "${{in_filename}}" --pmerge-list "{input.list}" --make-bed --out "${{out_filename}}" --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:
     resources:
         mem="150G"
     input:
-        bed=lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","stripped_chr_{i}.bed"),
-            i=range(1,23),
-            OUTPUT_DIR=wildcards.OUTPUT_DIR,
-            SOURCE=wildcards.SOURCE
-        ),
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     shell:
         """
-        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/stripped_chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} || true
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target {input.bed} || true
         """
 
 rule prs_valid:
     resources:
         mem="150G"
     input:
-        bed=lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","stripped_chr_{i}.bed"),
-            i=range(1,23),
-            OUTPUT_DIR=wildcards.OUTPUT_DIR,
-            SOURCE=wildcards.SOURCE
-        ),
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv"),
         valid=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
-        bed_prefix="{wildcards.OUTPUT_DIR}/{wildcards.SOURCE}/bed/stripped_chr_#"
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{bed_prefix}} --extract {input.valid}
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target {input.bed} --extract {input.valid}
         """
