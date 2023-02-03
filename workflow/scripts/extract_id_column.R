@@ -30,4 +30,4 @@ ids <- id_map[[column]]
 out <- sapply(ids, function(id) unlist(paste0(id, c("M", "F", "A", "B"))))
 out <- c(out[1,], out[2,], out[3,], out[4,])
 
-write(out, file = snakemake@output[[1]])
+write(paste(out, collapse = " "), file = snakemake@output[[1]])
