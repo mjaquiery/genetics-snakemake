@@ -71,17 +71,29 @@ rule clean_bim:
         Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}" "{output}"
         """
 
+rule filter_variants:
+    input:
+        bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
+        exclude=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "exclude_snps_{CHR}.txt")
+    output:
+        os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","biallelic_chr_{CHR}.bed")
+    shell:
+        """
+        qctool -g {input.bed} -og {output} -excl-positions {input.exclude}
+        """
+
+
 rule make_mergelist:
     input:
         bed=lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.bed"),
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","biallelic_chr_{i}.bed"),
             i=range(1, 22),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
         ),  # note we leave off chr_22
-        ex=lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","exclude_snps_{i}.txt"),
-            i=range(1, 23),
+        fam=lambda wildcards: expand(
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.fam"),
+            i=range(1, 22),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
         )
@@ -92,13 +104,16 @@ rule make_mergelist:
         import os
         with open(str(output), "w+") as list_file:
             targets = [os.path.splitext(f)[0] for f in input['bed']]
-            split_targets = [f"{x}.bed {x}.bim {x}.fam" for x in targets]
+            split_targets = [
+                f"{targets[i]}.bed {targets[i]}.bim {input['fam']}.fam" for i in range(len(targets))
+            ]
             print(split_targets)
             list_file.write("\n".join(split_targets))
 
 rule merge_bed:
     input:
-        file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_22.bed"),
+        file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "biallelic_chr_22.bed"),
+        fam=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_22.fam"),
         list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
@@ -109,7 +124,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --bfile "${{in_filename}}" --pmerge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink2 --bfile "${{in_filename}}" --fam "{input.fam}" --pmerge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:

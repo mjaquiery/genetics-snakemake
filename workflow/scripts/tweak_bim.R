@@ -27,13 +27,17 @@ f <- readr::read_tsv(input_file, col_names = col_names)
 print("Original format:")
 print(f)
 
+set.seed(20230203)
+
 f <- f %>% mutate(
   biallelic = nchar(ref) == 1 & nchar(alt) == 1,
   chr = chr_number,
-  id = if_else(biallelic, paste(chr, pos, ref, alt, sep = ":"), paste(chr, pos))
+  id = if_else(biallelic, paste(chr, pos, ref, alt, sep = ":"), paste(chr, pos, sep = ":")),
+  id = if_else(biallelic & !pos, glue("unknown_{runif(1, 0, 1e10)}"), id)
 )
 
 print(glue("{f %>% filter(!biallelic) %>% nrow()} multiallelic rows found."))
+print(glue("Of which {f %>% filter(str_starts(id, 'unknown_')) %>% nrow()} are unknown."))
 print(glue("Writing multiallelic ids to {exclude_id_file}"))
 
 exclude_list <- f %>% filter(!biallelic) %>% select(id)
