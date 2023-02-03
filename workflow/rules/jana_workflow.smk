@@ -12,7 +12,7 @@ rule bgen_to_bed:
         """
         out_filename="{output.bed}"
         out_filename="${{out_filename%.*}}"
-        plink2 --bgen ${{out_filename}} ref-last --sample {input.sample} --make-bed --out "${{out_filename}}"
+        plink2 --bgen {input.bgen} ref-last --sample {input.sample} --make-bed --out "${{out_filename}}"
         """
 
 rule clean_bim:
