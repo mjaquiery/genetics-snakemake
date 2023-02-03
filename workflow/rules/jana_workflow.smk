@@ -18,9 +18,25 @@ rule extract_id_list:
     script:
         "../scripts/extract_id_column.R"
 
+rule subset_by_ids:
+    input:
+        bgen=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen"),
+        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
+        ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
+    output:
+        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "vcf", "filtered_chr_{CHR}.bgen"))
+    shell:
+        """
+        echo "Subsetting bgen file {input.bgen} -> {output}"
+        echo "Sample file {input.sample}"
+        echo "ID whitelist from {input.ids}"
+        # module load qctool/2022-04-07-gcc-9.4.0  # we use a local install because the cluster version is broken
+        qctool -g {input.bgen} -s {input.sample} -og {output} -incl-samples {input.ids}
+        """
+
 rule bgen_to_bed:
     input:
-        bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
+        bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","filtered_chr_{CHR}.bgen"),
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
         include_samples=os.path.join("{OUTPUT_DIR}","triad_ids_{SOURCE}.tsv")
     output:
@@ -31,7 +47,7 @@ rule bgen_to_bed:
         """
         out_filename="{output.bed}"
         out_filename="${{out_filename%.*}}"
-        plink2 --bgen {input.bgen} ref-last --sample {input.sample} --keep {input.include_samples} --make-bed --out "${{out_filename}}"
+        plink2 --bgen {input.bgen} ref-last --sample {input.sample} --make-bed --out "${{out_filename}}"
         """
 
 rule clean_bim:
