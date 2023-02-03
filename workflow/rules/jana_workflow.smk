@@ -74,7 +74,7 @@ rule clean_bim:
 rule make_mergelist:
     input:
         lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","stripped_chr_{i}.bed"),
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.bed"),
             i=range(1, 22),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
@@ -92,7 +92,7 @@ rule make_mergelist:
 
 rule merge_bed:
     input:
-        file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "stripped_chr_22.bed"),
+        file=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_22.bed"),
         list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
