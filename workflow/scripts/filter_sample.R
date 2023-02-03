@@ -38,7 +38,7 @@ f <- readr::read_delim(
   input_file,
   delim = " ",
   skip = n_header_lines,
-  col_names = col_names[[1]]
+  col_names = col_names
 )
 
 print("Loaded data:")
