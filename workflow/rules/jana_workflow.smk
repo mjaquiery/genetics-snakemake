@@ -37,7 +37,7 @@ rule subset_by_ids:
 rule subset_sample_file:
     input:
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        include_ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
+        include_ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.txt")
     output:
         os.path.join("{OUTPUT_DIR}","{SOURCE}", "bgen", "trimmed.sample")
     script:
@@ -46,7 +46,7 @@ rule subset_sample_file:
 rule bgen_to_bed:
     input:
         bgen=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen"),
-        sample=os.path.join("{OUTPUT_DIR}","{SOURCE}", "bgen", "trimmed.sample"),
+        sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
         ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.txt")
     output:
         bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
