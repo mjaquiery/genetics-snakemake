@@ -6,6 +6,7 @@
 #
 # output will be a similarly structured file with only complete triads retained
 library(readr)  # for read_tsv
+library(tibble)
 
 print("extract_column_id:")
 print(paste("snakemake@input:", snakemake@input[[1]]))
@@ -30,4 +31,6 @@ ids <- id_map[[column]]
 out <- sapply(ids, function(id) unlist(paste0(id, c("M", "F", "A", "B"))))
 out <- c(out[1,], out[2,], out[3,], out[4,])
 
-write(out, file = snakemake@output[[1]])
+out <- tibble(FID = out, IID = out)
+
+write_tsv(out, file = snakemake@output[[1]], col_names = F)

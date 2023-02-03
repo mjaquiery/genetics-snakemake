@@ -14,7 +14,7 @@ rule extract_id_list:
     input:
         os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
     output:
-        os.path.join("{OUTPUT_DIR}","triad_ids_{SOURCE}.txt")
+        os.path.join("{OUTPUT_DIR}","triad_ids_{SOURCE}.tsv")
     script:
         "../scripts/extract_id_column.R"
 
@@ -22,7 +22,7 @@ rule subset_by_ids:
     input:
         bgen=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen"),
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.txt")
+        ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
     output:
         temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "filtered_chr_{CHR}.bgen"))
     shell:
@@ -37,7 +37,7 @@ rule subset_by_ids:
 rule subset_sample_file:
     input:
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        include_ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.txt")
+        include_ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
     output:
         os.path.join("{OUTPUT_DIR}","{SOURCE}", "bgen", "trimmed.sample")
     script:
@@ -47,7 +47,7 @@ rule bgen_to_bed:
     input:
         bgen=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen"),
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.txt")
+        ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
     output:
         bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
         bim=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bim"),
