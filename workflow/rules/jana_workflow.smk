@@ -103,7 +103,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --bfile "${{in_filename}}" --pmerge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only ['just-acgt'] --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink2 --bfile "${{in_filename}}" --pmerge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:
