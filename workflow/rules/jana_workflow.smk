@@ -79,7 +79,7 @@ rule filter_variants:
         os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","biallelic_chr_{CHR}.bed")
     shell:
         """
-        qctool -g {input.bed} -og {output} -excl-positions {input.exclude}
+        qctool -g {input.bed} -og {output} -excl-snpids {input.exclude}
         """
 
 
