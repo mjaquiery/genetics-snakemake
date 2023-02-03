@@ -73,19 +73,25 @@ rule clean_bim:
 
 rule make_mergelist:
     input:
-        lambda wildcards: expand(
+        bed=lambda wildcards: expand(
             os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.bed"),
             i=range(1, 22),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
-        )  # note we leave off chr_22
+        ),  # note we leave off chr_22
+        ex=lambda wildcards: expand(
+            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","exclude_snps_{i}.txt"),
+            i=range(1, 23),
+            OUTPUT_DIR=wildcards.OUTPUT_DIR,
+            SOURCE=wildcards.SOURCE
+        )
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     run:
         print(f"Making mergelist -> {output}")
         import os
         with open(str(output), "w+") as list_file:
-            targets = [os.path.splitext(f)[0] for f in input]
+            targets = [os.path.splitext(f)[0] for f in input['bed']]
             split_targets = [f"{x}.bed {x}.bim {x}.fam" for x in targets]
             print(split_targets)
             list_file.write("\n".join(split_targets))
