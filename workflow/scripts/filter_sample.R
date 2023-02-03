@@ -28,7 +28,7 @@ col_names <- c(
   "father",
   "mother",
   "sex",
-  "plink_pheno",
+  "plink_pheno"
 )
 
 print("Header:")
