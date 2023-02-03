@@ -10,11 +10,19 @@ rule determine_complete_triads:
     script:
         "../scripts/determine_complete_triads.R"
 
+rule extract_id_list:
+    input:
+        os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
+    output:
+        os.path.join("{OUTPUT_DIR}","triad_ids_{SOURCE}.tsv")
+    script:
+        "../scripts/extract_id_column.R"
+
 rule bgen_to_bed:
     input:
         bgen=os.path.join("{OUTPUT_DIR}","{SOURCE}","bgen","chr_{CHR}.bgen"),
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
-        include_samples=os.path.join("{OUTPUT_DIR}","complete_triad_ids.tsv")
+        include_samples=os.path.join("{OUTPUT_DIR}","triad_ids_{SOURCE}.tsv")
     output:
         bed=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bed"),
         bim=os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{CHR}.bim"),

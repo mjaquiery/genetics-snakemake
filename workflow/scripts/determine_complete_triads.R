@@ -30,6 +30,9 @@ for (id in ids) {
   all_ids <- bind_rows(all_ids, d)
 }
 
+print("ID stats:")
+all_ids %>% group_by(source) %>% summarise(n = n())
+
 # Valid rows have a role indicator
 # F - father
 # M - mother
@@ -41,16 +44,13 @@ df_in <- all_ids %>%
   mutate(role = str_extract(ID_1, "[FMAB]$")) %>%
   filter(!is.na(role)) %>%
   # handle different id structure for gi_1000g_g0p ids
-  mutate(id = map_chr(ID_1, function(id) {
-    if (str_starts(id, "gi_1000g_g0p")) {
-      str_remove(id, "gi_1000g_g0p_") %>% str_remove("[FMAB]$")
-    } else {
-      str_extract(id, "\\d+")
-    }
-  }))
+  mutate(id = map_chr(ID_1, ~ str_remove(., "[FMAB]$")))
 
 print("input:")
-head(df_in)
+print(df_in)
+
+print("ID stats:")
+df_in %>% group_by(source, role) %>% summarise(n = n())
 
 # get pregnancy identifier from the linker file
 df <- df_in %>%
@@ -67,27 +67,34 @@ df <- df_in %>%
 
 print(paste("Dropped", nrow(df_in) - nrow(df), "rows with missing contributor ids"))
 print("df:")
-head(df)
+print(df)
 
-cids <- df %>% nest(data = -cid)
+cids <- df %>%
+  nest(data = -cid) %>%
+  mutate(entries = map_int(data, nrow))
 
 print("cids:")
-head(cids)
+print(cids)
+
+print("Family size:")
+cids %>% group_by(entries) %>% summarise(n = n())
 
 # Identify complete triads
 complete_triads <- cids %>%
-  mutate(entries = map_int(data, nrow)) %>%
   filter(entries > 2)
 
 print("complete_triads:")
-head(complete_triads)
+print(complete_triads)
 
 id_map <- complete_triads %>%
   unnest(data) %>%
   select(cid, id, source)
 
 print("id_map:")
-head(id_map)
+print(id_map)
+
+print("Summary by file:")
+id_map %>% group_by(source) %>% summarise(n = n())
 
 id_map <- id_map %>%
   pivot_wider(
@@ -99,6 +106,6 @@ id_map <- id_map %>%
   select(-cid, cid)
 
 print("output:")
-head(id_map)
+print(id_map)
 
 write_tsv(id_map, snakemake@output[[1]])
