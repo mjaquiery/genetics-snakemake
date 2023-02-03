@@ -68,7 +68,7 @@ rule clean_bim:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "exclude_snps_{CHR}.txt")
     shell:
         """
-        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}" "{output}"
+        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}.x" "{output}"
         """
 
 rule filter_variants:
@@ -79,20 +79,18 @@ rule filter_variants:
         os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","biallelic_chr_{CHR}.bed")
     shell:
         """
-        qctool -g {input.bed} -og {output} -excl-snpids {input.exclude}
+        in_filename="{input.bed}"
+        in_filename="${{in_filename%.*}}"
+        out_filename="{output}"
+        out_filename="${{out_filename%.*}}"
+        plink2 --bfile "${{in_filename}}" --make-bed --exclude "{input.exclude}" --out "${{out_filename}}"
         """
 
 
 rule make_mergelist:
     input:
-        bed=lambda wildcards: expand(
+        lambda wildcards: expand(
             os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","biallelic_chr_{i}.bed"),
-            i=range(1, 23),
-            OUTPUT_DIR=wildcards.OUTPUT_DIR,
-            SOURCE=wildcards.SOURCE
-        ),
-        fam=lambda wildcards: expand(
-            os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.fam"),
             i=range(1, 23),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
@@ -103,10 +101,8 @@ rule make_mergelist:
         print(f"Making mergelist -> {output}")
         import os
         with open(str(output), "w+") as list_file:
-            targets = [os.path.splitext(f)[0] for f in input['bed']]
-            split_targets = [
-                f"{targets[i]}.bed {targets[i]}.bim {input['fam'][i]}" for i in range(len(targets))
-            ]
+            targets = [os.path.splitext(f)[0] for f in input]
+            split_targets = [f"{x}.bed {x}.bim {x}.fam" for x in targets]
             print(split_targets)
             list_file.write("\n".join(split_targets))
 
@@ -120,7 +116,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --merge-list "{input}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink --merge-list "{input}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:
