@@ -58,13 +58,13 @@ rule g0p:
 
 rule bed_clean:
     input:
-        [os.path.join(config['output_dir'],"gi_1000g_g0p","bed",f"cleaned_{i}") for i in range(1,23)],
-        [os.path.join(config['output_dir'],"gi_1000g_g0m_g1","bed",f"cleaned_{i}") for i in range(1,23)]
+        [os.path.join(config['output_dir'],"gi_1000g_g0p","bed",f"exclude_snps_{i}.txt") for i in range(1,23)],
+        [os.path.join(config['output_dir'],"gi_1000g_g0m_g1","bed",f"exclude_snps_{i}.txt") for i in range(1,23)]
 
 rule c22:
     input:
-        os.path.join(config['output_dir'], "gi_1000g_g0p", "bed", "cleaned_22"),
-        os.path.join(config['output_dir'], "gi_1000g_g0m_g1", "bed", "cleaned_22")
+        os.path.join(config['output_dir'], "gi_1000g_g0p", "bed", "exclude_snps_22.txt"),
+        os.path.join(config['output_dir'], "gi_1000g_g0m_g1", "bed", "exclude_snps_22.txt")
 
 # Remove intermediate directories
 rule clean:

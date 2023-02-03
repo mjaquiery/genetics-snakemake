@@ -22,11 +22,10 @@ rule clean_bim:
     params:
         rscript=workflow.source_path("../scripts/tweak_bim.R")
     output:
-        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "cleaned_{CHR}")
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "exclude_snps_{CHR}.txt")
     shell:
         """
-        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}"
-        touch {output}
+        Rscript "{params.rscript}" --args "{input}" "{wildcards.CHR}" "{input}" "{output}"
         """
 
 rule make_mergelist:
