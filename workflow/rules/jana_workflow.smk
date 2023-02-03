@@ -20,7 +20,7 @@ rule clean_bim:
     input:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "chr_{CHR}.bim")
     params:
-        rscript=workflow.source_path("../scripts/recode_chrpos_to_rsid.R")
+        rscript=workflow.source_path("../scripts/tweak_bim.R")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bed", "cleaned_{CHR}")
     shell:
