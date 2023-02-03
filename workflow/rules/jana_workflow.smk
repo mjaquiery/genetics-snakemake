@@ -112,17 +112,15 @@ rule make_mergelist:
 
 rule merge_bed:
     input:
-        list=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
+        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
     shell:
         """
-        in_filename={input.file}
-        in_filename=${{in_filename%.*}}
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --merge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink2 --merge-list "{input}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:
