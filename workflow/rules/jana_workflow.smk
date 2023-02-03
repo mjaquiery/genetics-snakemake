@@ -87,13 +87,13 @@ rule make_mergelist:
     input:
         bed=lambda wildcards: expand(
             os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","biallelic_chr_{i}.bed"),
-            i=range(1, 22),
+            i=range(1, 23),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
-        ),  # note we leave off chr_22
+        ),
         fam=lambda wildcards: expand(
             os.path.join("{OUTPUT_DIR}","{SOURCE}","bed","chr_{i}.fam"),
-            i=range(1, 22),
+            i=range(1, 23),
             OUTPUT_DIR=wildcards.OUTPUT_DIR,
             SOURCE=wildcards.SOURCE
         )
@@ -124,7 +124,7 @@ rule merge_bed:
         out_filename={output}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink2 --bfile "${{in_filename}}" --fam "{input.fam}" --pmerge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink2 --bfile "${{in_filename}}" --fam "{input.fam}" --merge-list "{input.list}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
 rule prs:
