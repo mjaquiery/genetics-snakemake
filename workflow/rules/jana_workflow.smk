@@ -130,9 +130,11 @@ rule prs:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     shell:
         """
+        in_filename={input.bed}
+        in_filename=${{in_filename%.*}}
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target {input.bed} || true
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{in_filename}} || true
         """
 
 rule prs_valid:
@@ -146,7 +148,9 @@ rule prs_valid:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.all_score")
     shell:
         """
+        in_filename={input.bed}
+        in_filename=${{in_filename%.*}}
         out_filename={output}
         out_filename=${{out_filename%.*}}
-        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target {input.bed} --extract {input.valid}
+        Rscript ~/.tools/prsice/PRSice.R --prsice ~/.tools/prsice/PRSice_linux --base {input.gwas} --out ${{out_filename}} --snp rsID --no-regress --all-score --fastscore --beta --target ${{in_filename}} --extract {input.valid}
         """
