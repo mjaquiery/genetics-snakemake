@@ -24,7 +24,7 @@ rule subset_by_ids:
         sample=lambda wildcards: config['data_dirs'][wildcards.SOURCE]['sample_file'],
         ids=os.path.join("{OUTPUT_DIR}", "triad_ids_{SOURCE}.tsv")
     output:
-        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "vcf", "filtered_chr_{CHR}.bgen"))
+        temp(os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "filtered_chr_{CHR}.bgen"))
     shell:
         """
         echo "Subsetting bgen file {input.bgen} -> {output}"
