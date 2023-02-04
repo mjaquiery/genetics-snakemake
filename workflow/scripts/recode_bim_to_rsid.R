@@ -22,6 +22,8 @@ f <- readr::read_tsv(input_file, col_names = col_names, col_types = 'iciicc')
 print("Original format:")
 f
 
+required_row_size <- nrow(f)
+
 map <- readr::read_tsv(
   map_file,
   comment = "#",
@@ -51,6 +53,8 @@ print(glue("{map %>% nrow()} rows remaining"))
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 
+assertthat::assert_that(nrow(f) == row_count)
+
 print("Joined structure:")
 f
 
@@ -71,6 +75,8 @@ print(glue("OKAY rows: {f %>% filter(!is.na(ID)) %>% nrow()}"))
 print(glue("Trying swap for {f %>% filter(is.na(ID)) %>% nrow()} rows."))
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
+assertthat::assert_that(nrow(f) == row_count)
+
 f <- f %>%
   mutate(ID = if_else(is.na(ID), rsID, ID)) %>%
   select(everything(), -rsID)
