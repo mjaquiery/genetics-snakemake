@@ -1,16 +1,14 @@
 # Take a bim file and use chr:pos + variant info to recode from a mapper file
 #
-library(readr)
-library(dplyr)
-library(tidyr)
-library(stringr)
+library(tidyverse)
 library(glue)
 
 print("recode_bim_to_rsid:")
 
 input_file <- commandArgs(T)[2]
 map_file <- commandArgs(T)[3]
-output_file <- commandArgs(T)[4]
+gwas_file <- commandArgs(T)[4]
+output_file <- commandArgs(T)[5]
 
 print(paste("input_file:", input_file))
 print(paste("map_file:", map_file))
@@ -27,14 +25,28 @@ map <- readr::read_tsv(
   map_file,
   comment = "#",
   col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"),
-  col_types = 'iicccccc'
+  col_types = 'cicccccc'
 ) %>%
+  filter(str_detect(CHROM, "\\d")) %>%
+  mutate(CHROM = as.integer(CHROM)) %>%
   select(CHROM, POS, rsID = ID, REF, ALT)
 
 print("Mapper structure:")
 print(map)
-print("Map parse issues:")
-problems(map)
+
+gwas <- readr::read_tsv(gwas_file)
+
+print("Mapper after non-gwas rsIDs removed:")
+map <- map %>% filter(rsID %in% gwas$rsID)
+print(glue("{map %>% nrow()} rows remaining"))
+print("Removing rsIDs with same chr:pos:ref:alt")
+map <- map %>%
+  nest(data = rsID) %>%
+  mutate(nrow = map_int(data, nrow)) %>%
+  filter(n == 1) %>%
+  unnest(data) %>%
+  select(-n)
+print(glue("{map %>% nrow()} rows remaining"))
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 
