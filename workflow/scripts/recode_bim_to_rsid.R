@@ -53,10 +53,10 @@ print(glue("{map %>% nrow()} rows remaining"))
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 
-assertthat::assert_that(nrow(f) == row_count)
-
 print("Joined structure:")
 f
+
+assertthat::assert_that(nrow(f) == required_row_size)
 
 f <- f %>% mutate(ID = rsID) %>% select(everything(), -rsID)
 
@@ -75,7 +75,7 @@ print(glue("OKAY rows: {f %>% filter(!is.na(ID)) %>% nrow()}"))
 print(glue("Trying swap for {f %>% filter(is.na(ID)) %>% nrow()} rows."))
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
-assertthat::assert_that(nrow(f) == row_count)
+assertthat::assert_that(nrow(f) == required_row_size)
 
 f <- f %>%
   mutate(ID = if_else(is.na(ID), rsID, ID)) %>%
