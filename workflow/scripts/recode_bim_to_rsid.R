@@ -21,11 +21,10 @@ col_names <- c("CHROM", "ID", "unknown", "POS", "REF", "ALT")
 f <- readr::read_tsv(input_file, col_names = col_names, col_types = 'iciicc')
 
 print("Original format:")
-print(f)
+f
 
-map <- readr::read_delim(
+map <- readr::read_tsv(
   map_file,
-  delim = "\t",
   comment = "#",
   col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"),
   col_types = 'iicccccc'
@@ -34,44 +33,43 @@ map <- readr::read_delim(
 
 print("Mapper structure:")
 print(map)
+print("Map parse issues:")
+problems(map)
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 
 print("Joined structure:")
-print(f)
+f
 
 f <- f %>% mutate(ID = rsID) %>% select(everything(), -rsID)
 
 print("Converted structure:")
-print(f)
+f
 
 print("Handling swapped ref/alt alleles")
-na <- f %>% filter(is.na(ID))
-f <- f %>% filter(!is.na(ID))
-
-print("OKAY rows:")
-print(f)
-
-na <- na %>%
-  mutate(tmp = REF, REF = ALT, ALT = tmp) %>%
+f <- f %>% mutate(
+  tmp = REF,
+  REF = if_else(is.na(ID), ALT, REF),
+  ALT = if_else(is.na(ID), tmp, ALT)
+) %>%
   select(-tmp)
 
-print("NA rows:")
-print(na)
+print(glue("OKAY rows: {f %>% filter(!is.na(ID)) %>% nrow()}"))
+print(glue("Trying swap for {f %>% filter(is.na(ID)) %>% nrow()} rows."))
 
-na <- left_join(na, map, by = c("CHROM", "POS", "REF", "ALT"))
-na <- na %>% mutate(ID = rsID) %>% select(everything(), -rsID)
-
-f <- bind_rows(f, na) %>% arrange(POS)
+f <- left_join(na, map, by = c("CHROM", "POS", "REF", "ALT"))
+f <- f %>%
+  mutate(ID = if_else(is.na(ID), rsID, ID)) %>%
+  select(everything(), -rsID)
 
 print("Output:")
-print(f)
+f
 
-na <- na %>% filter(is.na(ID))
-if (nrow(na)) {
-  print(glue("{nrow(f %>% filter(is.na(ID)))} rows with NA ID"))
-  print(na)
-}
+print("Summary:")
+f %>%
+  mutate(na_id = is.na(ID)) %>%
+  group_by(na_id) %>%
+  summarise(n = n())
 
 readr::write_tsv(f, output_file, col_names = F)
 
