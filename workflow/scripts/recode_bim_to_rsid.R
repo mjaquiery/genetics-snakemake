@@ -30,8 +30,7 @@ map <- readr::read_delim(
   col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"),
   col_types = cols(.default = col_character())
 ) %>%
-  select(CHROM, POS, rsID = ID, REF, ALT) %>%
-  filter(CHROM %in% chr_whitelist)
+  select(CHROM, POS, rsID = ID, REF, ALT)
 
 print("Mapper structure:")
 print(map)
