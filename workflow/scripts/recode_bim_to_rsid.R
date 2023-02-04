@@ -18,7 +18,7 @@ print(paste("output_file:", output_file))
 
 col_names <- c("CHROM", "ID", "unknown", "POS", "REF", "ALT")
 
-f <- readr::read_tsv(input_file, col_names = col_names)
+f <- readr::read_tsv(input_file, col_names = col_names, col_types = 'iciicc')
 
 print("Original format:")
 print(f)
@@ -28,7 +28,7 @@ map <- readr::read_delim(
   delim = "\t",
   comment = "#",
   col_names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"),
-  col_types = cols(.default = col_character())
+  col_types = 'iicccccc'
 ) %>%
   select(CHROM, POS, rsID = ID, REF, ALT)
 
