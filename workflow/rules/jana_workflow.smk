@@ -135,7 +135,9 @@ rule merge_bed:
         out_filename={output.bed}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
-        plink --merge-list "{input}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
+        plink --merge-list "{input}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt'
+        echo "QC merged file"
+        plink --bfile "${{out_filename}}" --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05 --make-bed --out "${{out_filename}}"
         """
 
 rule inject_rsid:
