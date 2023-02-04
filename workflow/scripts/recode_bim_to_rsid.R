@@ -12,6 +12,7 @@ output_file <- commandArgs(T)[5]
 
 print(paste("input_file:", input_file))
 print(paste("map_file:", map_file))
+print(paste("gwas_file:", gwas_file))
 print(paste("output_file:", output_file))
 
 col_names <- c("CHROM", "ID", "unknown", "POS", "REF", "ALT")
@@ -42,10 +43,10 @@ print(glue("{map %>% nrow()} rows remaining"))
 print("Removing rsIDs with same chr:pos:ref:alt")
 map <- map %>%
   nest(data = rsID) %>%
-  mutate(nrow = map_int(data, nrow)) %>%
-  filter(n == 1) %>%
+  mutate(row_count = map_int(data, nrow)) %>%
+  filter(row_count == 1) %>%
   unnest(data) %>%
-  select(-n)
+  select(-row_count)
 print(glue("{map %>% nrow()} rows remaining"))
 
 f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
