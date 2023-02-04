@@ -18,6 +18,22 @@ rule extract_id_list:
     script:
         "../scripts/extract_id_column.R"
 
+rule download_code_map:
+    output:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf.gz")
+    shell:
+        """
+        wget ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b150_GRCh37p13/VCF/common_all_20170710.vcf.gz --output-document="{output}"
+        """
+
+rule unzip_code_map:
+    input:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf.gz")
+    output:
+        os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf")
+    shell:
+        "gunzip {input}"
+
 rule subset_by_ids:
     input:
         bgen=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "bgen", "chr_{CHR}.bgen"),
@@ -111,20 +127,42 @@ rule merge_bed:
     input:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "mergelist.txt")
     output:
-        os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed")
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
+        bim=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bim"),
+        fam=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.fam")
     shell:
         """
-        out_filename={output}
+        out_filename={output.bed}
         out_filename=${{out_filename%.*}}
         echo "Merging .bed files"
         plink --merge-list "{input}" --make-bed --out "${{out_filename}}" --snps-only 'just-acgt' --maf 0.01 --geno 0.05 --hwe 0.001 --mind 0.05
         """
 
+rule inject_rsid:
+    input:
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
+        bim=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bim"),
+        fam=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.fam"),
+        map=os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf")
+    params:
+        rscript=workflow.source_path("../scripts/recode_bim_to_rsid.R")
+    output:
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_rsid.bed"),
+        bim=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_rsid.bim"),
+        fam=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_rsid.fam")
+    shell:
+        """
+        Rscript {params.rscript} --args "{input.bim}" "{input.map}" "{output.bim}"
+        mv {input.bed} {output.bed}
+        mv {input.fam} {output.fam}
+        """
+
+
 rule prs:
     resources:
         mem="150G"
     input:
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_rsid.bed"),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv")
     output:
         os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
@@ -141,7 +179,7 @@ rule prs_valid:
     resources:
         mem="150G"
     input:
-        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
+        bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_rsid.bed"),
         gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv"),
         valid=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "prs.valid")
     output:
