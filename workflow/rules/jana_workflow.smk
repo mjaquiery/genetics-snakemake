@@ -143,7 +143,8 @@ rule inject_rsid:
         bed=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bed"),
         bim=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.bim"),
         fam=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all.fam"),
-        map=os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf")
+        map=os.path.join("{OUTPUT_DIR}","recode_map","common_all_20170710.vcf"),
+        gwas=os.path.join("{OUTPUT_DIR}", "gwas", "gwas-03-disamb.tsv")
     params:
         rscript=workflow.source_path("../scripts/recode_bim_to_rsid.R")
     output:
@@ -152,7 +153,7 @@ rule inject_rsid:
         fam=os.path.join("{OUTPUT_DIR}", "{SOURCE}", "all_rsid.fam")
     shell:
         """
-        Rscript {params.rscript} --args "{input.bim}" "{input.map}" "{output.bim}"
+        Rscript {params.rscript} --args "{input.bim}" "{input.map}" "{input.gwas}" "{output.bim}"
         mv {input.bed} {output.bed}
         mv {input.fam} {output.fam}
         """
