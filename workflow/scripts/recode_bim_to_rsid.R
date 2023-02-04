@@ -57,7 +57,7 @@ f <- f %>% mutate(
 print(glue("OKAY rows: {f %>% filter(!is.na(ID)) %>% nrow()}"))
 print(glue("Trying swap for {f %>% filter(is.na(ID)) %>% nrow()} rows."))
 
-f <- left_join(na, map, by = c("CHROM", "POS", "REF", "ALT"))
+f <- left_join(f, map, by = c("CHROM", "POS", "REF", "ALT"))
 f <- f %>%
   mutate(ID = if_else(is.na(ID), rsID, ID)) %>%
   select(everything(), -rsID)
